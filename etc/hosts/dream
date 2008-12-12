@@ -8,3 +8,5 @@ roles:
   - com.listbox.postlink
   - com.listbox.archiver
   - com.listbox.jeeves
+
+  - com.listbox.vdom

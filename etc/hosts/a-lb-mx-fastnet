@@ -1,0 +1,7 @@
+hostname: a-lb-mx-fastnet
+domain: listbox.com
+location: fastnet
+ip:
+  world: 207.106.133.21
+roles:
+  - com.listbox.mx

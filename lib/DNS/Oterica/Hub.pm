@@ -20,7 +20,9 @@ use Module::Pluggable
 
 sub BUILD {
   my ($self) = @_;
-  $self->_node_role_registry->{ $_->name } = $_->new for $self->plugins;
+
+  $self->_node_role_registry->{ $_->name } = $_->new({ hub => $self })
+    for $self->plugins;
 
   $self->_loc_registry->{world} = DNS::Oterica::Location->new({
     name => 'world',

@@ -6,11 +6,11 @@ sub __ip_locode_pairs {
   my ($self, $rec) = @_;
 
   if ($rec->{node} and $rec->{ip} || $rec->{loc}) {
-    confess('provide either a node or an ip/loc, not both');
+    Carp::confess('provide either a node or an ip/loc, not both');
   }
 
   if (not $rec->{node} || $rec->{ip}) {
-    confess('provide either a node or an ip/loc');
+    Carp::confess('provide either a node or an ip/loc');
   }
 
   # This is what we'd do to emit one record per interface to implement a split
@@ -63,11 +63,16 @@ sub mx {
   my ($self, $rec) = @_;
 
   my @lines;
+
+  my $mx_name = defined $rec->{mx} ? $rec->{mx}
+              : $rec->{node}       ? $rec->{node}->fqdn
+              : Carp::confess('neither mx nor node given as mx for mx record');
+  
   for my $if ($self->__ip_locode_pairs($rec)) {
     push @lines, sprintf "@%s:%s:%s:%s:%s:%s:%s\n",
       $rec->{name},
       $if->[0],
-      $rec->{mx},
+      $mx_name,
       $rec->{dist} || 10,
       $rec->{ttl} || 3600,
       $^T,

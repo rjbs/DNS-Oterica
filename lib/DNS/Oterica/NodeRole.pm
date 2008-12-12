@@ -3,6 +3,13 @@ use Moose;
 
 with 'DNS::Oterica::Role::RecordMaker';
 
+has hub => (
+  is   => 'ro',
+  isa  => 'DNS::Oterica::Hub',
+  weak_ref => 1,
+  required => 1,
+);
+
 has nodes => (
   is  => 'ro',
   isa => 'ArrayRef',
