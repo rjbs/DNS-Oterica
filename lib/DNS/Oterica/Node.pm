@@ -1,9 +1,9 @@
 package DNS::Oterica::Node;
 use Moose;
 
-has name   => (is => 'ro', isa => 'Str', required => 1);
-has domain => (is => 'ro', isa => 'Str', required => 1);
-has roles  => (is => 'ro', isa => 'ArrayRef', default => sub { [] });
+has domain   => (is => 'ro', isa => 'Str', required => 1);
+has hostname => (is => 'ro', isa => 'Str', required => 1);
+has roles    => (is => 'ro', isa => 'ArrayRef', default => sub { [] });
 
 # each one is [ $ip, $loc ]
 has interfaces => (
@@ -32,7 +32,7 @@ sub add_to_role {
 
 sub fqdn {
   my ($self) = @_;
-  sprintf '%s.%s', $self->name, $self->domain;
+  sprintf '%s.%s', $self->hostname, $self->domain;
 }
 
 sub as_data_lines {

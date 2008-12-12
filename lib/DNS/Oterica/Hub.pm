@@ -55,8 +55,8 @@ sub node {
     if $domain->{$name} and $arg;
 
   return $domain->{$name} = DNS::Oterica::Node->new({
-    domain => $domain_name,
-    name   => $name,
+    domain   => $domain_name,
+    hostname => $name,
     %$arg,
   });
 }

@@ -14,7 +14,7 @@ $hub->add_location($_) for (
   { name => 'quonix-dmz',  code => 'qx' },
 );
 
-my @files = File::Find::Rule->file->in('etc');
+my @files = File::Find::Rule->file->in('etc/nodes');
 
 for my $file (@files) {
   for my $data (YAML::LoadFile($file)) {
@@ -46,7 +46,7 @@ for my $file (@files) {
   }
 }
 
-my @nodes = sort { ($a->location cmp $b->location) || ($a->name cmp $b->name) }
+my @nodes = sort { ($a->location cmp $b->location) || ($a->fqdn cmp $b->fqdn) }
             $hub->nodes;
 
 print $_->as_data_lines for @nodes;
