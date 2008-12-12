@@ -15,7 +15,10 @@ for my $file (@files) {
   my $node = $hub->node(
     $data->{domain},
     $data->{hostname},
-    { ip => $data->{ip}{world} },
+    {
+      ip       => $data->{ip}{world},
+      location => $data->{location},
+    },
   );
 
   for my $name (@{ $data->{roles} }) {
@@ -25,5 +28,9 @@ for my $file (@files) {
   }
 }
 
-print $_->as_data_lines, "\n" for $hub->nodes;
+my @nodes = sort { ($a->location cmp $b->location) || ($a->name cmp $b->name) }
+            $hub->nodes;
+
+print $_->as_data_lines for @nodes;
+print "\n";
 print $_->as_data_lines, "\n" for $hub->node_roles;

@@ -19,7 +19,7 @@ sub add_node {
 sub as_data_lines {
   my ($self) = @_;
   my $string = "# begin role " . $self->name . "\n";
-  $string .= inner() || '';
+  $string .= $_ for inner();
   $string .= "# end role " . $self->name . "\n";
 
   return $string;

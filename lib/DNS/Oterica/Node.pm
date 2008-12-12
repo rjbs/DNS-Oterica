@@ -5,7 +5,8 @@ has name   => (is => 'ro', isa => 'Str', required => 1);
 has domain => (is => 'ro', isa => 'Str', required => 1);
 has roles  => (is => 'ro', isa => 'ArrayRef', default => sub { [] });
 
-has ip => (is => 'ro', isa => 'Str', required => 1);
+has ip       => (is => 'ro', isa => 'Str', required => 1);
+has location => (is => 'ro', isa => 'Str', required => 1);
 
 with 'DNS::Oterica::Role::RecordMaker';
 
