@@ -4,6 +4,7 @@ use Moose;
 
 use DNS::Oterica::Location;
 use DNS::Oterica::Node;
+use DNS::Oterica::Node::Host;
 use DNS::Oterica::NodeRole;
 
 has [ qw(_domain_registry _loc_registry _node_role_registry) ] => (
@@ -47,14 +48,14 @@ sub add_location {
   $self->_loc_registry->{$name} = $loc;
 }
 
-sub node {
+sub host {
   my ($self, $domain_name, $name, $arg) = @_;
   my $domain = $self->domain($domain_name);
 
   confess "tried to create $name . $domain_name twice"
     if $domain->{$name} and $arg;
 
-  return $domain->{$name} = DNS::Oterica::Node->new({
+  return $domain->{$name} = DNS::Oterica::Node::Host->new({
     domain   => $domain_name,
     hostname => $name,
     %$arg,

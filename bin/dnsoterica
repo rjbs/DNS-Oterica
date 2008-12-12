@@ -14,7 +14,7 @@ $hub->add_location($_) for (
   { name => 'quonix-dmz',  code => 'qx' },
 );
 
-my @files = File::Find::Rule->file->in('etc/nodes');
+my @files = File::Find::Rule->file->in('etc/hosts');
 
 for my $file (@files) {
   for my $data (YAML::LoadFile($file)) {
@@ -29,7 +29,7 @@ for my $file (@files) {
       $interfaces = [ [ $data->{ip} => $hub->location('world') ] ];
     }
 
-    my $node = $hub->node(
+    my $node = $hub->host(
       $data->{domain},
       $data->{hostname},
       {
