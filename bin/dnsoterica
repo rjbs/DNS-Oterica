@@ -1,0 +1,23 @@
+#!/icg/bin/perl
+use strict;
+use warnings;
+use DNS::Oterica::Hub;
+use YAML ();
+
+my $hub = DNS::Oterica::Hub->new;
+
+my ($data) = YAML::LoadFile('etc/dream');
+
+my $node = DNS::Oterica::Node->new({
+  name   => $data->{hostname},
+  domain => $data->{domain},
+  ip     => $data->{ip}{world},
+});
+
+for my $name (@{ $data->{roles} }) {
+  my $role = DNS::Oterica::Role->new({ name => $name });
+
+  $node->add_to_role($role);
+}
+
+print $node->as_data_line;
