@@ -20,7 +20,7 @@ sub fqdn {
   sprintf '%s.%s', $self->name, $self->domain;
 }
 
-sub as_data_line {
+sub as_data_lines {
   my ($self) = @_;
   $self->rec->a_and_ptr({ name => $self->fqdn, ip => $self->ip });
 }

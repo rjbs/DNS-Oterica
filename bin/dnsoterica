@@ -2,22 +2,28 @@
 use strict;
 use warnings;
 use DNS::Oterica::Hub;
+use File::Find::Rule;
 use YAML ();
 
 my $hub = DNS::Oterica::Hub->new;
 
-my ($data) = YAML::LoadFile('etc/dream');
+my @files = File::Find::Rule->file->in('etc');
 
-my $node = DNS::Oterica::Node->new({
-  name   => $data->{hostname},
-  domain => $data->{domain},
-  ip     => $data->{ip}{world},
-});
+for my $file (@files) {
+  my ($data) = YAML::LoadFile($file);
 
-for my $name (@{ $data->{roles} }) {
-  my $role = DNS::Oterica::Role->new({ name => $name });
+  my $node = $hub->node(
+    $data->{domain},
+    $data->{hostname},
+    { ip => $data->{ip}{world} },
+  );
 
-  $node->add_to_role($role);
+  for my $name (@{ $data->{roles} }) {
+    my $role = $hub->node_role($name);
+
+    $node->add_to_role($role);
+  }
 }
 
-print $node->as_data_line;
+print $_->as_data_lines, "\n" for $hub->nodes;
+print $_->as_data_lines, "\n" for $hub->node_roles;
