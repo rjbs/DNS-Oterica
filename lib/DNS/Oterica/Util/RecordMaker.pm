@@ -26,5 +26,19 @@ sub a {
   $self->_generic(q{+}, $rec);
 }
 
+# @fqdn:ip:x:dist:ttl:timestamp:lo
+sub mx {
+  my ($self, $rec) = @_;
+  return sprintf "@%s:%s:%s:%s:%s\n",
+    $rec->{name},
+    $rec->{ip},
+    $rec->{mx},
+    $rec->{dist} || 10,
+    $rec->{ttl} || 3600,
+    $^T,
+    $rec->{loc} || '',
+  ;
+}
+
 
 1;
