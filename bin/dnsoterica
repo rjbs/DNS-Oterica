@@ -6,25 +6,43 @@ use File::Find::Rule;
 use YAML ();
 
 my $hub = DNS::Oterica::Hub->new;
+$hub->add_location($_) for (
+  { name => 'office',      code => ''   },
+  { name => 'fastnet',     code => ''   },
+  { name => 'quonix',      code => ''   },
+  { name => 'fastnet-dmz', code => 'fn' },
+  { name => 'quonix-dmz',  code => 'qx' },
+);
 
 my @files = File::Find::Rule->file->in('etc');
 
 for my $file (@files) {
-  my ($data) = YAML::LoadFile($file);
+  for my $data (YAML::LoadFile($file)) {
+    my $location = $hub->location($data->{location});
 
-  my $node = $hub->node(
-    $data->{domain},
-    $data->{hostname},
-    {
-      ip       => $data->{ip}{world},
-      location => $data->{location},
-    },
-  );
+    my $interfaces;
+    if (ref $data->{ip}) {
+      $interfaces = [
+        map {; [ $data->{ip}{$_} => $hub->location($_) ] } keys %{ $data->{ip}}
+      ];
+    } else {
+      $interfaces = [ [ $data->{ip} => $hub->location('world') ] ];
+    }
 
-  for my $name (@{ $data->{roles} }) {
-    my $role = $hub->node_role($name);
+    my $node = $hub->node(
+      $data->{domain},
+      $data->{hostname},
+      {
+        interfaces => $interfaces,
+        location   => $data->{location},
+      },
+    );
 
-    $node->add_to_role($role);
+    for my $name (@{ $data->{roles} }) {
+      my $role = $hub->node_role($name);
+
+      $node->add_to_role($role);
+    }
   }
 }
 

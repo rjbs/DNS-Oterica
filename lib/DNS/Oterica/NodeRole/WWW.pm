@@ -9,9 +9,9 @@ augment as_data_lines => sub {
 
   my $string = '';
   for my $node ($self->nodes) {
-    $string .= $self->rec->a({
+    $string .= $_ for $self->rec->a({
       name => 'www.pobox.com',
-      ip   => $node->ip,
+      node => $node,
     });
   }
 

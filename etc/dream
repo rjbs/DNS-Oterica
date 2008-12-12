@@ -3,7 +3,7 @@ domain: listbox.com
 location: fastnet
 ip:
   world: 207.8.214.6 
-  fastnet: 2.3.4.5
+  fastnet-dmz: 2.3.4.5
 roles:
   - com.listbox.postlink
   - com.listbox.archiver

@@ -6,17 +6,7 @@ use DNS::Oterica::Location;
 use DNS::Oterica::Node;
 use DNS::Oterica::NodeRole;
 
-has locations => (
-  is  => 'ro',
-  isa => 'ArrayRef[DNS::Oterica::Location]',
-  # metaclass  => 'Collection::Array',
-  # provides   => { push => 'add_location' },
-  auto_deref => 1,
-  init_arg   => undef,
-  default    => sub { [] },
-);
-
-has [ qw(_domain_registry _node_role_registry) ] => (
+has [ qw(_domain_registry _loc_registry _node_role_registry) ] => (
   is  => 'ro',
   isa => 'HashRef',
   init_arg => undef,
@@ -30,11 +20,31 @@ use Module::Pluggable
 sub BUILD {
   my ($self) = @_;
   $self->_node_role_registry->{ $_->name } = $_->new for $self->plugins;
+
+  $self->_loc_registry->{world} = DNS::Oterica::Location->new({
+    name => 'world',
+    code => '',
+  });
 }
 
 sub domain {
   my ($self, $name) = @_;
   return $self->_domain_registry->{$name} ||= {};
+}
+
+sub location {
+  my ($self, $name) = @_;
+  return $self->_loc_registry->{$name} || confess "no such location '$name'";
+}
+
+sub add_location {
+  my ($self, $arg) = @_;
+  my $loc = DNS::Oterica::Location->new({ %$arg, hub => $self });
+
+  my $name = $loc->name;
+  confess "tried to create $name twice" if $self->_loc_registry->{$name};
+
+  $self->_loc_registry->{$name} = $loc;
 }
 
 sub node {

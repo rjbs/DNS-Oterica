@@ -4,6 +4,23 @@ extends 'DNS::Oterica::NodeRole';
 
 sub name { 'com.pobox.mx' }
 
+has mx_nodes => (
+  is  => 'ro',
+  isa => 'HashRef',
+  default    => sub { {} },
+  auto_deref => 1,
+);
+
+after add_node => sub {
+  my ($self, $node) = @_;
+  my $nodes = $self->mx_nodes;
+  my $i = keys %$nodes;
+  
+  my $next_name = sprintf 'mx-%s.pobox.com', $i+1;
+
+  $self->mx_nodes->{ $next_name } = $node;
+};
+
 augment as_data_lines => sub {
   my ($self) = @_;
   my @lines;
@@ -12,18 +29,21 @@ augment as_data_lines => sub {
 
   my @required = map { "$_.pobox.com" } qw(mx-pa-3 mx-ca-1 mx-ca-2 mx-ca-3);
 
-  for my $node ($self->nodes) {
-    if (my $stupid_mx = shift @required) {
-      push @lines, $self->rec->a({
-        name => $stupid_mx,
-        ip   => $node->ip,
-      });
-    }
-
-    my $mx_name = sprintf 'mx-%s.pobox.com', $i++;
+  my @nodes = $self->nodes;
+  while (my $stupid_mx = shift @required) {
+    my $next = shift @nodes;
     push @lines, $self->rec->a({
-      name => $mx_name,
-      ip   => $node->ip,
+      name => $stupid_mx,
+      node => $next,
+    });
+    push @nodes, $next;
+  }
+
+  my %mx = $self->mx_nodes;
+  for my $name (sort keys %mx) {
+    push @lines, $self->rec->a({
+      name => $name,
+      node => $mx{$name},
     });
   }
 

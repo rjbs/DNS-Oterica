@@ -15,13 +15,13 @@ augment as_data_lines => sub {
       push @lines, $self->rec->mx({
         name => $name,
         mx   => $node->fqdn,
-        ip   => $node->ip,
+        node => $node,
       });
     }
 
     push @lines, $self->rec->a({
       name => 'www.archives.listbox.com',
-      ip   => $node->ip,
+      node => $node,
     });
   }
 
