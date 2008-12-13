@@ -14,9 +14,21 @@ $hub->add_location($_) for (
   { name => 'quonix-dmz',  code => 'qx' },
 );
 
-my @files = File::Find::Rule->file->in('etc/hosts');
+for my $file (File::Find::Rule->file->in('etc/domains')) {
+  for my $data (YAML::LoadFile($file)) {
+    my $node = $hub->domain(
+      $data->{domain},
+    );
 
-for my $file (@files) {
+    for my $name (@{ $data->{roles} }) {
+      my $role = $hub->node_role($name);
+
+      $node->add_to_role($role);
+    }
+  }
+}
+
+for my $file (File::Find::Rule->file->in('etc/hosts')) {
   for my $data (YAML::LoadFile($file)) {
     my $location = $hub->location($data->{location});
 
@@ -46,8 +58,7 @@ for my $file (@files) {
   }
 }
 
-my @nodes = sort { ($a->location cmp $b->location) || ($a->fqdn cmp $b->fqdn) }
-            $hub->nodes;
+my @nodes = sort { $a->fqdn cmp $b->fqdn } $hub->nodes;
 
 print $_->as_data_lines for @nodes;
 print "\n";

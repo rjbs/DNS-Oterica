@@ -31,8 +31,15 @@ sub BUILD {
 }
 
 sub domain {
-  my ($self, $name) = @_;
-  return $self->_domain_registry->{$name} ||= {};
+  my ($self, $name, $arg) = @_;
+  my $domreg = $self->_domain_registry;
+
+  confess "tried to create domain $name twice" if $domreg->{$name} and $arg;
+
+  return $domreg->{$name} ||= DNS::Oterica::Node->new({
+    domain => $name,
+    %{ $arg || {} },
+  });
 }
 
 sub location {
@@ -57,7 +64,7 @@ sub host {
   confess "tried to create $name . $domain_name twice"
     if $domain->{$name} and $arg;
 
-  return $domain->{$name} = DNS::Oterica::Node::Host->new({
+  return $domain->{nodes}{$name} ||= DNS::Oterica::Node::Host->new({
     domain   => $domain_name,
     hostname => $name,
     %$arg,
@@ -70,7 +77,7 @@ sub nodes {
   my @nodes;
 
   for my $domain (values %{ $self->_domain_registry }) {
-    push @nodes, values %$domain;
+    push @nodes, values %{ $domain->{nodes} || {} };
   }
 
   return @nodes;
