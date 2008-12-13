@@ -47,6 +47,7 @@ for my $file (File::Find::Rule->file->in('etc/hosts')) {
       {
         interfaces => $interfaces,
         location   => $data->{location},
+        aliases    => $data->{aliases} || [],
       },
     );
 

@@ -3,6 +3,13 @@ use Moose;
 extends 'DNS::Oterica::Node';
 
 has hostname => (is => 'ro', isa => 'Str', required => 1);
+has aliases  => (
+  is => 'ro',
+  isa => 'ArrayRef',
+  required   => 1,
+  auto_deref => 1,
+  default    => sub { [] },
+);
 
 # each one is [ $ip, $loc ]
 has interfaces => (
@@ -27,7 +34,10 @@ sub fqdn {
 
 sub as_data_lines {
   my ($self) = @_;
-  $self->rec->a_and_ptr({ name => $self->fqdn, node => $self });
+  my @lines = $self->rec->a_and_ptr({ name => $self->fqdn, node => $self });
+  push @lines, $self->rec->a({ name => $_, node => $self }) for $self->aliases;
+
+  return @lines;
 }
 
 __PACKAGE__->meta->make_immutable;
