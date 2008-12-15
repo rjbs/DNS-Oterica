@@ -1,10 +1,10 @@
-package DNS::Oterica::NodeRole::ListboxMX;
+package DNS::Oterica::NodeRole::RightboxNS;
 use Moose;
 extends 'DNS::Oterica::NodeRole';
 
-sub name { 'com.listbox.mx' }
+sub name { 'com.rightbox.ns' }
 
-has mx_nodes => (
+has ns_nodes => (
   is  => 'ro',
   isa => 'HashRef',
   default    => sub { {} },
@@ -13,23 +13,23 @@ has mx_nodes => (
 
 after add_node => sub {
   my ($self, $node) = @_;
-  my $nodes = $self->mx_nodes;
+  my $nodes = $self->ns_nodes;
   my $i = keys %$nodes;
   
-  my $next_name = sprintf 'mx-%s.listbox.com', $i+1;
+  my $next_name = sprintf 'ns-%s.rightbox.com', $i+1;
 
-  $self->mx_nodes->{ $next_name } = $node;
+  $self->ns_nodes->{ $next_name } = $node;
 };
 
 augment as_data_lines => sub {
   my ($self) = @_;
   my @lines;
 
-  my %mx = $self->mx_nodes;
-  for my $name (sort keys %mx) {
+  my %ns = $self->ns_nodes;
+  for my $name (sort keys %ns) {
     push @lines, $self->rec->a({
       name => $name,
-      node => $mx{$name},
+      node => $ns{$name},
     });
   }
 

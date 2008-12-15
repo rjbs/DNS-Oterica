@@ -4,6 +4,7 @@ use Moose;
 
 use DNS::Oterica::Location;
 use DNS::Oterica::Node;
+use DNS::Oterica::Node::Domain;
 use DNS::Oterica::Node::Host;
 use DNS::Oterica::NodeRole;
 
@@ -36,9 +37,10 @@ sub domain {
 
   confess "tried to create domain $name twice" if $domreg->{$name} and $arg;
 
-  return $domreg->{$name} ||= DNS::Oterica::Node->new({
+  return $domreg->{$name} ||= DNS::Oterica::Node::Domain->new({
     domain => $name,
     %{ $arg || {} },
+    hub    => $self,
   });
 }
 
@@ -68,6 +70,7 @@ sub host {
     domain   => $domain_name,
     hostname => $name,
     %$arg,
+    hub      => $self,
   });
 }
 

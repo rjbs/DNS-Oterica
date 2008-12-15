@@ -6,3 +6,4 @@ ip:
   fastnet-dmz: 1.2.3.4
 roles:
   - com.pobox.www
+  - com.rightbox.ns

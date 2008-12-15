@@ -4,11 +4,14 @@ extends 'DNS::Oterica::NodeRole';
 
 sub name { 'com.pobox.alias-domain' }
 
+after add_node => sub {
+  my ($self, $node) = @_;
+  $node->add_to_role('com.rightbox.domain');
+};
+
 augment as_data_lines => sub {
   my ($self) = @_;
   my @lines;
-
-  my $i = 1;
 
   my %mx_nodes = $self->hub->node_role('com.pobox.mx')->mx_nodes;
 

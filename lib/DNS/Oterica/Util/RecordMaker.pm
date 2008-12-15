@@ -2,6 +2,8 @@ use strict;
 use warnings;
 package DNS::Oterica::Util::RecordMaker;
 
+sub _default_ttl { 3600 }
+
 sub __ip_locode_pairs {
   my ($self, $rec) = @_;
 
@@ -37,7 +39,7 @@ sub _generic {
       $op,
       $rec->{name},
       $if->[0],
-      $rec->{ttl} || 3600,
+      $rec->{ttl} || $self->_default_ttl,
       $^T,
       $if->[1],
     ;
@@ -74,11 +76,32 @@ sub mx {
       $if->[0],
       $mx_name,
       $rec->{dist} || 10,
-      $rec->{ttl} || 3600,
+      $rec->{ttl} || $self->_default_ttl,
       $^T,
       $if->[1],
     ;
   }
+
+  return @lines;
+}
+
+# .fqdn:ip:x:ttl:timestamp:lo
+# This doesn't handle nodes, because I don't want to deal with ip-less records,
+# which would cause __generic to barf.  This is just a hack for now.
+# -- rjbs, 2008-12-15
+sub domain {
+  my ($self, $rec) = @_;
+
+  my @lines;
+
+  push @lines, sprintf ".%s:%s:%s:%s:%s:%s\n",
+    $rec->{domain},
+    $rec->{ip} || '',
+    $rec->{ns},
+    $rec->{ttl} || $self->_default_ttl,
+    $^T,
+    '',
+  ;
 
   return @lines;
 }
