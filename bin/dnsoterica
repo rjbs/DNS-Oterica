@@ -1,6 +1,8 @@
 #!/icg/bin/perl
 use strict;
 use warnings;
+use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
+
 use DNS::Oterica::Hub;
 use File::Find::Rule;
 use YAML ();
