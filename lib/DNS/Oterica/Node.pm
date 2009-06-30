@@ -16,16 +16,16 @@ has hub => (
 sub add_to_family {
   my ($self, $family) = @_;
   $family = $self->hub->node_family($family) unless ref $family;
-  return if $self->does_node_family($family);
+  return if $self->in_node_family($family);
   $family->add_node($self);
-  push @{ $self->family }, $family;
+  push @{ $self->families }, $family;
 }
 
 sub in_node_family {
   my ($self, $family) = @_;
   $family = $self->hub->node_family($family) unless ref $family;
 
-  for my $node_family (@{ $self->family }) {
+  for my $node_family (@{ $self->families }) {
     return 1 if $family == $node_family;
   }
 

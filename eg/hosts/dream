@@ -4,7 +4,7 @@ location: fastnet
 ip:
   world: 207.8.214.6 
   fastnet-dmz: 2.3.4.5
-roles:
+families:
   - com.listbox.postlink
   - com.listbox.archiver
   - com.listbox.jeeves

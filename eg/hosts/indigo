@@ -3,5 +3,5 @@ domain: pobox.com
 location: fastnet
 ip:
   world: 207.106.133.17
-roles:
+families:
   - com.pobox.mx

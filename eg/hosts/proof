@@ -4,6 +4,6 @@ location: fastnet
 ip:
   world: 207.106.133.28 
   fastnet-dmz: 1.2.3.4
-roles:
+families:
   - com.pobox.www
   - com.rightbox.ns

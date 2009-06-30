@@ -8,6 +8,7 @@ use File::Find::Rule;
 use YAML ();
 
 my $hub = DNS::Oterica::Hub->new;
+
 $hub->add_location($_) for (
   { name => 'office',      code => ''   },
   { name => 'fastnet',     code => ''   },

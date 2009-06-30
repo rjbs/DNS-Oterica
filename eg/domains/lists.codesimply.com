@@ -1,3 +1,3 @@
 domain: lists.codesimply.com
-roles:
+families:
   - com.listbox.vdom

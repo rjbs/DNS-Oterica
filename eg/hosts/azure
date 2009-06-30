@@ -3,5 +3,5 @@ domain: pobox.com
 location: quonix
 ip:
   world: 208.72.237.55
-roles:
+families:
   - com.pobox.mx
