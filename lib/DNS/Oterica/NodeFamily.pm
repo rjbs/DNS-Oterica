@@ -1,4 +1,4 @@
-package DNS::Oterica::NodeRole;
+package DNS::Oterica::NodeFamily;
 use Moose;
 
 with 'DNS::Oterica::Role::RecordMaker';
@@ -25,9 +25,9 @@ sub add_node {
 
 sub as_data_lines {
   my ($self) = @_;
-  my $string = "# begin role " . $self->name . "\n";
+  my $string = "# begin family " . $self->name . "\n";
   $string .= $_ for inner();
-  $string .= "# end role " . $self->name . "\n";
+  $string .= "# end family " . $self->name . "\n";
 
   return $string;
 }

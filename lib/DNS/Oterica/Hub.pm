@@ -6,9 +6,9 @@ use DNS::Oterica::Location;
 use DNS::Oterica::Node;
 use DNS::Oterica::Node::Domain;
 use DNS::Oterica::Node::Host;
-use DNS::Oterica::NodeRole;
+use DNS::Oterica::NodeFamily;
 
-has [ qw(_domain_registry _loc_registry _node_role_registry) ] => (
+has [ qw(_domain_registry _loc_registry _node_family_registry) ] => (
   is  => 'ro',
   isa => 'HashRef',
   init_arg => undef,
@@ -16,13 +16,13 @@ has [ qw(_domain_registry _loc_registry _node_role_registry) ] => (
 );
 
 use Module::Pluggable
-  search_path => [ qw(DNS::Oterica::NodeRole) ],
+  search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;
 
 sub BUILD {
   my ($self) = @_;
 
-  $self->_node_role_registry->{ $_->name } = $_->new({ hub => $self })
+  $self->_node_family_registry->{ $_->name } = $_->new({ hub => $self })
     for $self->plugins;
 
   $self->_loc_registry->{world} = DNS::Oterica::Location->new({
@@ -86,15 +86,16 @@ sub nodes {
   return @nodes;
 }
 
-sub node_role {
+sub node_family {
   my ($self, $name) = @_;
 
-  return $self->_node_role_registry->{$name} || confess "unknown role $name";
+  return $self->_node_family_registry->{$name}
+      || confess "unknown family $name";
 }
 
-sub node_roles {
+sub node_families {
   my ($self) = @_;
-  return values %{ $self->_node_role_registry };
+  return values %{ $self->_node_family_registry };
 }
 
 __PACKAGE__->meta->make_immutable;

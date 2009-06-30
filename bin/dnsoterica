@@ -22,10 +22,10 @@ for my $file (File::Find::Rule->file->in('etc/domains')) {
       $data->{domain},
     );
 
-    for my $name (@{ $data->{roles} }) {
-      my $role = $hub->node_role($name);
+    for my $name (@{ $data->{families} }) {
+      my $family = $hub->node_family($name);
 
-      $node->add_to_role($role);
+      $node->add_to_family($family);
     }
   }
 }
@@ -53,10 +53,10 @@ for my $file (File::Find::Rule->file->in('etc/hosts')) {
       },
     );
 
-    for my $name (@{ $data->{roles} }) {
-      my $role = $hub->node_role($name);
+    for my $name (@{ $data->{families} }) {
+      my $family = $hub->node_family($name);
 
-      $node->add_to_role($role);
+      $node->add_to_family($family);
     }
   }
 }
@@ -65,4 +65,4 @@ my @nodes = sort { $a->fqdn cmp $b->fqdn } $hub->nodes;
 
 print $_->as_data_lines for @nodes;
 print "\n";
-print $_->as_data_lines, "\n" for $hub->node_roles;
+print $_->as_data_lines, "\n" for $hub->node_families;
