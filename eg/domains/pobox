@@ -1,0 +1,8 @@
+---
+domain: pobox.com
+roles:
+  - com.pobox.alias-domain
+---
+domain: foobox.com
+roles:
+  - com.pobox.alias-domain

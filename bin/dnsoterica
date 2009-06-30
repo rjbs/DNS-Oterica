@@ -16,7 +16,9 @@ $hub->add_location($_) for (
   { name => 'quonix-dmz',  code => 'qx' },
 );
 
-for my $file (File::Find::Rule->file->in('etc/domains')) {
+my $root = $ARGV[0] || 'etc';
+
+for my $file (File::Find::Rule->file->in("$root/domains")) {
   for my $data (YAML::LoadFile($file)) {
     my $node = $hub->domain(
       $data->{domain},
@@ -30,7 +32,7 @@ for my $file (File::Find::Rule->file->in('etc/domains')) {
   }
 }
 
-for my $file (File::Find::Rule->file->in('etc/hosts')) {
+for my $file (File::Find::Rule->file->in("$root/hosts")) {
   for my $data (YAML::LoadFile($file)) {
     my $location = $hub->location($data->{location});
 
