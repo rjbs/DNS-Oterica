@@ -5,22 +5,23 @@ use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
 
 use DNS::Oterica::Hub;
 use File::Find::Rule;
-use YAML ();
+use YAML::XS ();
 
 my $hub = DNS::Oterica::Hub->new;
 
 $hub->add_location($_) for (
+  { name => 'quonix',      code => '',    network => '208.72.237.0/24', delegated => 1 },
+  { name => 'sd',          code => '',    network => '64.74.157.0/25'  },
+  { name => 'quonix-dmz',  code => 'qx',  network => '192.168.10.0/24' },
   { name => 'office',      code => ''   },
   { name => 'fastnet',     code => ''   },
-  { name => 'quonix',      code => ''   },
   { name => 'fastnet-dmz', code => 'fn' },
-  { name => 'quonix-dmz',  code => 'qx' },
 );
 
 my $root = $ARGV[0] || 'etc';
 
 for my $file (File::Find::Rule->file->in("$root/domains")) {
-  for my $data (YAML::LoadFile($file)) {
+  for my $data (YAML::XS::LoadFile($file)) {
     my $node = $hub->domain(
       $data->{domain},
     );
@@ -34,7 +35,7 @@ for my $file (File::Find::Rule->file->in("$root/domains")) {
 }
 
 for my $file (File::Find::Rule->file->in("$root/hosts")) {
-  for my $data (YAML::LoadFile($file)) {
+  for my $data (YAML::XS::LoadFile($file)) {
     my $location = $hub->location($data->{location});
 
     my $interfaces;

@@ -54,10 +54,37 @@ sub a_and_ptr {
   $self->_generic(q{=}, $rec);
 }
 
+# ^fqdn:ip:ttl:timestamp:lo
+# can't use __generic here because it wants to look at interfaces, and we want
+# the reverse of that
+sub ptr {
+  my ($self, $rec) = @_;
+
+    my @lines;
+    for my $if ($self->__ip_locode_pairs($rec)) {
+      my $ip = $if->[0];
+      my @bytes = split /\./, $ip;
+      @bytes = reverse @bytes;
+      splice @bytes, 1, 1, '0-24', $bytes[1];
+      my $arpa = join '.', @bytes, 'in-addr', 'arpa';
+      push @lines, sprintf "^%s:%s:%s:%s:%s\n",
+        $arpa,
+        $rec->{name},
+        $rec->{ttl} || $self->_default_ttl,
+        $^T,
+        $if->[1];
+    }
+    return @lines;
+}
+
 # +fqdn:ip:ttl:timestamp:lo
 sub a {
   my ($self, $rec) = @_;
-  $self->_generic(q{+}, $rec);
+  my @lines = $self->_generic(q{+}, $rec);
+  if($rec->{node}->hub->location($rec->{node}->location)->delegated) {
+    push @lines, $self->ptr($rec);
+  }
+  return @lines;
 }
 
 # @fqdn:ip:x:dist:ttl:timestamp:lo
@@ -69,7 +96,7 @@ sub mx {
   my $mx_name = defined $rec->{mx} ? $rec->{mx}
               : $rec->{node}       ? $rec->{node}->fqdn
               : Carp::confess('neither mx nor node given as mx for mx record');
-  
+
   for my $if ($self->__ip_locode_pairs($rec)) {
     push @lines, sprintf "@%s:%s:%s:%s:%s:%s:%s\n",
       $rec->{name},
@@ -94,10 +121,45 @@ sub domain {
 
   my @lines;
 
-  push @lines, sprintf ".%s:%s:%s:%s:%s:%s\n",
+  push @lines, sprintf "&%s:%s:%s:%s:%s:%s\n",
     $rec->{domain},
     $rec->{ip} || '',
     $rec->{ns},
+    $rec->{ttl} || $self->_default_ttl,
+    $^T,
+    '',
+  ;
+
+  return @lines;
+}
+
+sub soa_and_ns {
+  my ($self, $rec) = @_;
+
+  my @lines;
+
+  push @lines, sprintf "Z%s:%s:%s::::::%s:%s:%s\n",
+    $rec->{domain},
+    $rec->{ns} || '',
+    "hostmaster\@icgroup.com",
+    $rec->{ttl} || $self->_default_ttl,
+    $^T,
+    '',
+  ;
+
+  return @lines;
+}
+
+
+# Cfqdn:p:ttl:timestamp:lo
+sub cname {
+  my ($self, $rec) = @_;
+
+  my @lines;
+
+  push @lines, sprintf "C%s:%s:%s:%s:%s\n",
+    $rec->{cname},
+    $rec->{domain} || '',
     $rec->{ttl} || $self->_default_ttl,
     $^T,
     '',

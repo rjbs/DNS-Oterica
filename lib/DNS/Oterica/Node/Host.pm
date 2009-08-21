@@ -34,7 +34,7 @@ sub fqdn {
 
 sub as_data_lines {
   my ($self) = @_;
-  my @lines = $self->rec->a_and_ptr({ name => $self->fqdn, node => $self });
+  my @lines = $self->rec->a({ name => $self->fqdn, node => $self });
   push @lines, $self->rec->a({ name => $_, node => $self }) for $self->aliases;
 
   return @lines;
