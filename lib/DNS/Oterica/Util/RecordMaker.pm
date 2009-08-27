@@ -63,18 +63,47 @@ sub ptr {
     my @lines;
     for my $if ($self->__ip_locode_pairs($rec)) {
       my $ip = $if->[0];
-      my @bytes = split /\./, $ip;
-      @bytes = reverse @bytes;
+      my @bytes = reverse split /\./, $ip;
       splice @bytes, 1, 1, '0-24', $bytes[1];
-      my $arpa = join '.', @bytes, 'in-addr', 'arpa';
+      my $extended_arpa = join '.', @bytes, 'in-addr', 'arpa';
       push @lines, sprintf "^%s:%s:%s:%s:%s\n",
-        $arpa,
+        $extended_arpa,
         $rec->{name},
         $rec->{ttl} || $self->_default_ttl,
         $^T,
         $if->[1];
     }
     return @lines;
+}
+
+# TODO find out why we generate Z and & records for our IPs and refactor this
+# to not duplicate effort with &ptr and the like. problem is that &a calls &ptr
+# so having the code there means it gets called for every time we generate a +
+# record, totally not what we want. What we want is for this to be called once
+# for every IP address, not every hostname.
+sub soa_and_ns_for_ip {
+  my ($self, $rec) = @_;
+
+  my @lines;
+  my %ns = $rec->{node}->hub->node_family('com.rightbox.ns')->ns_nodes;
+  my $ip = $rec->{ip};
+  my @bytes = reverse split /\./, $ip;
+  my $arpa = join '.', @bytes, 'in-addr', 'arpa';
+  push @lines, sprintf "Z%s:%s:%s::::::%s:%s:%s\n",
+    $arpa,
+    'ns3.rightbox.com',
+    "hostmaster.icgroup.com",
+    $self->_default_ttl,
+    $^T,
+    '', ;
+  for my $ns (keys %ns) {
+    push @lines, $self->domain({
+      domain => $arpa,
+      ip     => $ip,
+      ns     => $ns,
+    });
+  }
+  return @lines;
 }
 
 # +fqdn:ip:ttl:timestamp:lo

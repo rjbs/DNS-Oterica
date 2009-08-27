@@ -37,6 +37,11 @@ sub as_data_lines {
   my @lines = $self->rec->a({ name => $self->fqdn, node => $self });
   push @lines, $self->rec->a({ name => $_, node => $self }) for $self->aliases;
 
+  for my $if ($self->interfaces) {
+    my $ip = $if->[0];
+    push @lines, $self->rec->soa_and_ns_for_ip({ip => $ip, node => $self});
+  }
+
   return @lines;
 }
 
