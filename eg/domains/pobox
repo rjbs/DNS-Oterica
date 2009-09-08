@@ -1,5 +1,5 @@
 ---
-domain: pobox.com
+domain: example.com
 families:
   - com.example.alias-domain
 ---

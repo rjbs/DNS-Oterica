@@ -1,9 +1,9 @@
 hostname: a-lb-mx-fastnet
-domain: listbox.com
+domain: example.com
 location: fastnet
 ip:
   world: 207.106.133.21
 aliases:
-  - almf.listbox.com
+  - almf.example.com
 families:
   - com.example.mx
