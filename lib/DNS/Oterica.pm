@@ -8,6 +8,6 @@ DNS::Oterica - build dns configuration more easily
 
 =cut
 
-our $VERSION = 0.000001;
+our $VERSION = 0.001001;
 
 1;
