@@ -5,6 +5,6 @@ ip:
   world: 207.8.214.6 
   fastnet-dmz: 2.3.4.5
 families:
-  - com.listbox.postlink
-  - com.listbox.archiver
-  - com.listbox.jeeves
+  - com.example.postlink
+  - com.example.archiver
+  - com.example.jeeves
