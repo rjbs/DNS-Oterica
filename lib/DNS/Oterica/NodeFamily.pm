@@ -1,4 +1,5 @@
 package DNS::Oterica::NodeFamily;
+# ABSTRACT: DNSO node family. Has lots of nodes.
 use Moose;
 
 with 'DNS::Oterica::Role::RecordMaker';

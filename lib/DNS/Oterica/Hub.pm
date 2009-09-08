@@ -1,4 +1,5 @@
 package DNS::Oterica::Hub;
+# ABSTRACT: DNSO hub. has locations and node families.
 use Moose;
 # use MooseX::AttributeHelpers;
 
@@ -22,8 +23,12 @@ use Module::Pluggable
 sub BUILD {
   my ($self) = @_;
 
-  $self->_node_family_registry->{ $_->name } = $_->new({ hub => $self })
-    for $self->plugins;
+  for my $plugin ($self->plugins) {
+    confess "tried to register " . $plugin->name . " twice" if exists
+      $self->_node_family_registry->{$plugin->name};
+    $self->_node_family_registry->{ $plugin->name }
+        = $plugin->new({ hub => $self });
+  }
 
   $self->_loc_registry->{world} = DNS::Oterica::Location->new({
     name => 'world',

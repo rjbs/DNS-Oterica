@@ -1,4 +1,5 @@
 package DNS::Oterica::Location;
+# ABSTRACT: DNSO location. nodes live here.
 use Moose;
 
 use Net::IP;

@@ -1,4 +1,5 @@
 package DNS::Oterica::Node;
+# ABSTRACT: DNSO node. belongs to families. 
 use Moose;
 
 with 'DNS::Oterica::Role::RecordMaker';
