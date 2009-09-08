@@ -1,4 +1,5 @@
 #!/icg/bin/perl
+# ABSTRACT: run dns-o!
 use strict;
 use warnings;
 use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
@@ -14,8 +15,6 @@ $hub->add_location($_) for (
   { name => 'sd',          code => '',    network => '64.74.157.0/25'  },
   { name => 'quonix-dmz',  code => 'qx',  network => '192.168.10.0/24' },
   { name => 'office',      code => ''   },
-  { name => 'fastnet',     code => ''   },
-  { name => 'fastnet-dmz', code => 'fn' },
 );
 
 my $root = $ARGV[0] || 'etc';

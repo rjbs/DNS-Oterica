@@ -1,6 +1,23 @@
 use strict;
 use warnings;
 package DNS::Oterica::Util::RecordMaker;
+# ABSTRACT: a tinydns recordmaker for DNSO.
+
+=head1 NAME
+
+DNS::Oterica::Util::RecordMaker -- tinydns recordmaker for DNS::Oterica
+
+=head1 DESCRIPTION
+
+This role provides logic for generating lines for the L<tinydns-data(8)>
+program to consume. It expects to be called via the
+L<DNS::Oterica::Role::RecordMaker> delegator.
+
+=head1 METHODS
+
+=over 4
+
+=cut
 
 sub _default_ttl { 3600 }
 
@@ -54,6 +71,13 @@ sub _generic {
   return @lines;
 }
 
+=item a_and_ptr
+
+Generate an C<=> line, the bread and butter A and PTR record pair for a
+hostname and IP.
+
+=cut
+
 # =fqdn:ip:ttl:timestamp:lo
 sub a_and_ptr {
   my ($self, $rec) = @_;
@@ -63,6 +87,12 @@ sub a_and_ptr {
     $self->ptr($rec),
   );
 }
+
+=item ptr
+
+Generate an C<^> line, for the reverse DNS of an IP address.
+
+=cut
 
 # ^fqdn:ip:ttl:timestamp:lo
 # can't use __generic here because it wants to look at interfaces, and we want

@@ -1,8 +1,8 @@
 ---
 domain: pobox.com
 families:
-  - com.pobox.alias-domain
+  - com.example.alias-domain
 ---
 domain: foobox.com
 families:
-  - com.pobox.alias-domain
+  - com.example.alias-domain

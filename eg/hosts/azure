@@ -4,4 +4,4 @@ location: quonix
 ip:
   world: 208.72.237.55
 families:
-  - com.pobox.mx
+  - com.example.mx

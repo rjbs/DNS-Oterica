@@ -4,4 +4,4 @@ location: fastnet
 ip:
   world: 207.106.133.17
 families:
-  - com.pobox.mx
+  - com.example.mx
