@@ -4,68 +4,25 @@ use strict;
 use warnings;
 use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
 
-use DNS::Oterica::Hub;
+use DNS::Oterica::App;
 use File::Find::Rule;
 use YAML::XS ();
 
-my $hub = DNS::Oterica::Hub->new;
+my $root = $ARGV[0] || 'etc';
+my $app = DNS::Oterica::App->new({ root => $root });
 
-$hub->add_location($_) for (
+$app->hub->add_location($_) for (
   { name => 'quonix',      code => '',    network => '208.72.237.0/24', delegated => 1 },
   { name => 'sd',          code => '',    network => '64.74.157.0/25'  },
   { name => 'quonix-dmz',  code => 'qx',  network => '192.168.10.0/24' },
   { name => 'office',      code => ''   },
 );
 
-my $root = $ARGV[0] || 'etc';
+$app->populate_domains;
+$app->populate_hosts;
 
-for my $file (File::Find::Rule->file->in("$root/domains")) {
-  for my $data (YAML::XS::LoadFile($file)) {
-    my $node = $hub->domain(
-      $data->{domain},
-    );
-
-    for my $name (@{ $data->{families} }) {
-      my $family = $hub->node_family($name);
-
-      $node->add_to_family($family);
-    }
-  }
-}
-
-for my $file (File::Find::Rule->file->in("$root/hosts")) {
-  for my $data (YAML::XS::LoadFile($file)) {
-    my $location = $hub->location($data->{location});
-
-    my $interfaces;
-    if (ref $data->{ip}) {
-      $interfaces = [
-        map {; [ $data->{ip}{$_} => $hub->location($_) ] } keys %{ $data->{ip}}
-      ];
-    } else {
-      $interfaces = [ [ $data->{ip} => $hub->location('world') ] ];
-    }
-
-    my $node = $hub->host(
-      $data->{domain},
-      $data->{hostname},
-      {
-        interfaces => $interfaces,
-        location   => $data->{location},
-        aliases    => $data->{aliases} || [],
-      },
-    );
-
-    for my $name (@{ $data->{families} }) {
-      my $family = $hub->node_family($name);
-
-      $node->add_to_family($family);
-    }
-  }
-}
-
-my @nodes = sort { $a->fqdn cmp $b->fqdn } $hub->nodes;
+my @nodes = sort { $a->fqdn cmp $b->fqdn } $app->hub->nodes;
 
 print $_->as_data_lines for @nodes;
 print "\n";
-print $_->as_data_lines, "\n" for $hub->node_families;
+print $_->as_data_lines, "\n" for $app->hub->node_families;

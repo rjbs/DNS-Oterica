@@ -8,28 +8,25 @@ use YAML::XS ();
 has hub => (
   is  => 'ro',
   isa => 'DNS::Oterica::Hub',
-  handles => [qw/
-    add_location
-    domain
-    location
-    host
-    nodes
-    node_family
-    node_families
-  /],
   default => sub { DNS::Oterica::Hub->new },
 );
 
+has root => (
+  is       => 'ro',
+  required => 1,
+);
+
 sub populate_domains {
-  my ($self, $root) = @_;
+  my ($self) = @_;
+  my $root = $self->root;
   for my $file (File::Find::Rule->file->in("$root/domains")) {
     for my $data (YAML::XS::LoadFile($file)) {
-      my $node = $self->domain(
+      my $node = $self->hub->domain(
         $data->{domain},
       );
 
       for my $name (@{ $data->{families} }) {
-        my $family = $self->node_family($name);
+        my $family = $self->hub->node_family($name);
 
         $node->add_to_family($family);
       }
@@ -38,24 +35,25 @@ sub populate_domains {
 }
 
 sub populate_hosts {
-  my ($self, $root) = @_;
+  my ($self) = @_;
+  my $root = $self->root;
   for my $file (File::Find::Rule->file->in("$root/hosts")) {
     for my $data (YAML::XS::LoadFile($file)) {
-      my $location = $self->location($data->{location});
+      my $location = $self->hub->location($data->{location});
 
       my $interfaces;
       if (ref $data->{ip}) {
         $interfaces = [
           map {;
             [
-            $data->{ip}{$_} => $self->location($_) ] 
+            $data->{ip}{$_} => $self->hub->location($_) ] 
           } keys %{ $data->{ip}}
         ];
       } else {
-        $interfaces = [ [ $data->{ip} => $self->location('world') ] ];
+        $interfaces = [ [ $data->{ip} => $self->hub->location('world') ] ];
       }
 
-      my $node = $self->host(
+      my $node = $self->hub->host(
         $data->{domain},
         $data->{hostname},
         {
@@ -66,7 +64,7 @@ sub populate_hosts {
       );
 
       for my $name (@{ $data->{families} }) {
-        my $family = $self->node_family($name);
+        my $family = $self->hub->node_family($name);
 
         $node->add_to_family($family);
       }
