@@ -4,6 +4,12 @@ package DNS::Oterica::Util::RecordMaker;
 
 sub _default_ttl { 3600 }
 
+sub comment {
+  my ($self, $comment) = @_;
+
+  return "# $comment\n";
+}
+
 sub __ip_locode_pairs {
   my ($self, $rec) = @_;
 

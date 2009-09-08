@@ -34,13 +34,18 @@ sub fqdn {
 
 sub as_data_lines {
   my ($self) = @_;
-  my @lines = $self->rec->a_and_ptr({ name => $self->fqdn, node => $self });
+
+  my @lines = $self->rec->comment("begin host ". $self->fqdn);
+
+  push @lines, $self->rec->a_and_ptr({ name => $self->fqdn, node => $self });
   push @lines, $self->rec->a({ name => $_, node => $self }) for $self->aliases;
 
   for my $if ($self->interfaces) {
     my $ip = $if->[0];
     push @lines, $self->rec->soa_and_ns_for_ip({ip => $ip, node => $self});
   }
+
+  push @lines, $self->rec->comment("end host ". $self->fqdn . "\n");
 
   return @lines;
 }
