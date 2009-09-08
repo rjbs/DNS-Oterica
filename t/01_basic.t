@@ -39,7 +39,7 @@ DNS::Oterica::Test->collect_dnso_node_families(@node_families);
 my $records = DNS::Oterica::Test->records;
 ok(ref $records eq 'HASH', '$records is a hashref');
 my @hosts = map { s[eg/hosts/][]; "$_.example.com" } glob 'eg/hosts/*';
-my @domains = map { s[eg/hosts/][] } glob 'eg/domains/*';
+my @domains = qw/lists.codesimply.com example.com foobox.com/;
 ok(exists $records->{$_}{'+'}, "$_ has a + record") for @hosts;
 ok(exists $records->{$_}{'Z'}, "$_ has a Z record") for @domains;
 
