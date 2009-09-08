@@ -51,7 +51,11 @@ sub _generic {
 # =fqdn:ip:ttl:timestamp:lo
 sub a_and_ptr {
   my ($self, $rec) = @_;
-  $self->_generic(q{=}, $rec);
+
+  return (
+    $self->_generic(q{+}, $rec),
+    $self->ptr($rec),
+  );
 }
 
 # ^fqdn:ip:ttl:timestamp:lo
@@ -110,9 +114,11 @@ sub soa_and_ns_for_ip {
 sub a {
   my ($self, $rec) = @_;
   my @lines = $self->_generic(q{+}, $rec);
-  if($rec->{node}->hub->location($rec->{node}->location)->delegated) {
-    push @lines, $self->ptr($rec);
-  }
+
+  # if  $rec->{node}->hub->location($rec->{node}->location)->delegated) {
+  #   push @lines, $self->ptr($rec);
+  # }
+
   return @lines;
 }
 
