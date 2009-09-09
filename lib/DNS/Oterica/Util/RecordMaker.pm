@@ -19,7 +19,7 @@ L<DNS::Oterica::Role::RecordMaker> delegator.
 
 =cut
 
-sub _default_ttl { 3600 }
+sub _default_ttl { 1800 }
 
 sub comment {
   my ($self, $comment) = @_;
