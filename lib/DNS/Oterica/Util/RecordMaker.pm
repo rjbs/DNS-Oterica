@@ -239,4 +239,20 @@ sub cname {
   return @lines;
 }
 
+sub txt {
+  my ($self, $rec) = @_;
+  my @lines;
+
+  # 'fqdn:s:ttl:timestamp:lo
+  push @lines, sprintf qq{'%s:%s:%s:%s:%s\n},
+    $rec->{node}->fqdn,
+    $rec->{text},
+    $rec->{ttl} || $self->_default_ttl,
+    $^T,
+    '',
+  ;
+
+  return @lines;
+}
+
 1;
