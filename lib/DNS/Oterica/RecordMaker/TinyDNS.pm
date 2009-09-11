@@ -116,17 +116,24 @@ sub soa_and_ns_for_ip {
   my ($self, $rec) = @_;
 
   my @lines;
-  my %ns = $rec->{node}->hub->node_family('com.rightbox.ns')->ns_nodes;
-  my $ip = $rec->{ip};
+  my $node = $rec->{node};
+  my $ns_f = $node->hub->ns_family;
+  my %ns   = $node->hub->node_family($ns_f)->ns_nodes;
+  my $ns_1 = (keys %ns)[0];
+  my $addr = $node->hub->hostmaster;
+  my $ip   = $rec->{ip};
   my @bytes = reverse split /\./, $ip;
   my $arpa = join '.', @bytes, 'in-addr', 'arpa';
+
   push @lines, sprintf "Z%s:%s:%s::::::%s:%s:%s\n",
     $arpa,
-    'ns3.rightbox.com',
-    "hostmaster.icgroup.com",
+    $ns_1,
+    $addr,
     $self->_default_ttl,
     $^T,
-    '', ;
+    '',
+  ;
+
   for my $ns (keys %ns) {
     push @lines, $self->domain({
       domain => $arpa,

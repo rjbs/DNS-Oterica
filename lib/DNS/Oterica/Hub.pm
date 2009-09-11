@@ -27,6 +27,31 @@ has [ qw(_domain_registry _loc_registry _node_family_registry) ] => (
   default  => sub { {} },
 );
 
+=attr ns_family
+
+This is the name of the family whose hosts will be used for NS records for
+hosts and in SOA lines.
+
+=cut
+
+has ns_family => (
+  is  => 'ro',
+  isa => 'Str',
+  required => 1,
+);
+
+=attr hostmaster
+
+This is the email address to be used as the contact point in SOA lines.
+
+=cut
+
+has hostmaster => (
+  is  => 'ro',
+  isa => 'Str',
+  required => 1,
+);
+
 use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;

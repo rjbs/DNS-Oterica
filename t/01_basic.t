@@ -9,8 +9,16 @@ use DNS::Oterica::Test;
 
 my $dnso_root = 'eg';
 my $dnso;
-lives_and { $dnso = DNS::Oterica::App->new(root => 'eg'); is ref $dnso, 'DNS::Oterica::App'; }
-  'constructor returns a DNSO object';
+lives_and {
+  $dnso = DNS::Oterica::App->new({
+    root       => 'eg',
+    hub_args   => {
+      ns_family  => 'com.example.ns',
+      hostmaster => 'hostmast@example.com',
+    },
+  });
+  is ref $dnso, 'DNS::Oterica::App';
+} 'constructor returns a DNSO object';
 
 my @methods = qw(
   populate_domains

@@ -13,10 +13,22 @@ This is the L<DNS::Oterica::Hub> into which entries will be loaded.
 =cut
 
 has hub => (
-  is  => 'ro',
-  isa => 'DNS::Oterica::Hub',
-  default => sub { DNS::Oterica::Hub->new },
+  is   => 'ro',
+  isa  => 'DNS::Oterica::Hub',
+  writer    => '_set_hub',
+  predicate => '_has_hub',
 );
+
+sub BUILD {
+  my ($self, $arg) = @_;
+
+  confess "both hub and hub_args provided"
+    if $self->_has_hub and $arg->{hub_args};
+
+  unless ($self->_has_hub) {
+    $self->_set_hub( DNS::Oterica::Hub->new($arg->{hub_args} || {}) );
+  }
+}
 
 =attr root
 
