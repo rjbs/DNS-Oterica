@@ -120,7 +120,7 @@ sub soa_and_ns_for_ip {
   my $ns_f = $node->hub->ns_family;
   my %ns   = $node->hub->node_family($ns_f)->ns_nodes;
   my $ns_1 = (keys %ns)[0];
-  my $addr = $node->hub->hostmaster;
+  my $addr = $node->hub->soa_rname;
   my $ip   = $rec->{ip};
   my @bytes = reverse split /\./, $ip;
   my $arpa = join '.', @bytes, 'in-addr', 'arpa';
@@ -210,7 +210,7 @@ sub soa_and_ns {
   push @lines, sprintf "Z%s:%s:%s::::::%s:%s:%s\n",
     $rec->{domain},
     $rec->{ns} || '',
-    "hostmaster\@icgroup.com",
+    $rec->{node}->hub->soa_rname,
     $rec->{ttl} || $self->_default_ttl,
     $^T,
     '',

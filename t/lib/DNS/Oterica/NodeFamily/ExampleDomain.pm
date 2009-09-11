@@ -14,6 +14,7 @@ augment as_data_lines => sub {
     push @lines, $self->rec->soa_and_ns({
       domain => $node->fqdn,
       ns     => 'ns.example.com',
+      node   => $node,
     });
     for my $ns (keys %ns_nodes) {
       push @lines, $self->rec->domain({

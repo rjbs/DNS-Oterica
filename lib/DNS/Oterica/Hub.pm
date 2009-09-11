@@ -52,6 +52,13 @@ has hostmaster => (
   required => 1,
 );
 
+sub soa_rname {
+  my ($self) = @_;
+  my $addr = $self->hostmaster;
+  $addr =~ s/@/./;
+  return $addr;
+}
+
 use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;

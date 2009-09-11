@@ -2,7 +2,7 @@ package DNS::Oterica::Role::RecordMaker;
 # ABSTRACT: a delegation class for the DNSO recordmaker.
 use Moose::Role;
 
-use DNS::Oterica::Util::RecordMaker;
+use DNS::Oterica::RecordMaker::TinyDNS;
 
 =head1 DESCRIPTION
 
@@ -11,14 +11,14 @@ exposes this record maker with its C<rec> method.
 
 =attr rec
 
-The record maker, e.g. L<DNS::Oterica::Util::RecordMaker>.
+The record maker, e.g. L<DNS::Oterica::RecordMaker::TinyDNS>.
 
 =cut
 
 has rec => (
   is  => 'ro',
   isa => 'Str', # XXX or object doing role, etc
-  default => 'DNS::Oterica::Util::RecordMaker',
+  default => 'DNS::Oterica::RecordMaker::TinyDNS',
 );
 
 no Moose::Role;
