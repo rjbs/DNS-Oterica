@@ -1,37 +1,25 @@
 package DNS::Oterica::Node::Host;
-# ABSTRACT: a host node, i.e., an individual subdomain
+# ABSTRACT: a host node
 use Moose;
 extends 'DNS::Oterica::Node';
 
-=head1 NAME
-
-DNS::Oterica::Node::Host -- A host node.
-
-=head1 DESCRIPTION
+=head1 OVERVIEW
 
 C<DNS::Oterica::Node::Host> represents an individual machine in DNS::Oterica.
-A node has interfaces (which have IP addresses), a physical location (a
-datacenter, etc.), and a C<DNS::Oterica::Node::Domain>.
+A node has interfaces (which have IP addresses), a network location, and is
+part of a named domain.
 
-=head1 ATTRIBUTES
+=attr hostname
 
-DNS::Oterica::Node::Host has these attributes. 
-
-=over 4
-
-=cut
-
-=item hostname: readonly required string
-
-This host's Internet name.
+This is the name of the host.  B<It does not include the domain name.>
 
 =cut
 
 has hostname => (is => 'ro', isa => 'Str', required => 1);
 
-=item aliases: readonly required arrayref
+=attr aliases
 
-The Internet host name aliases for this host.
+This is an arrayref of other fully-qualified names that refer to this host.
 
 =cut
 
@@ -43,13 +31,14 @@ has aliases  => (
   default    => sub { [] },
 );
 
-=item interfaces: readonly required arrayref
+=attr interfaces
 
-A tuple of (IP, location) pairs. 
+This is an arrayref of pairs, each one an IP address and a location.
+
+This attribute is pretty likely to change later.
 
 =cut
 
-# each one is [ $ip, $loc ]
 has interfaces => (
   is  => 'ro',
   isa => 'ArrayRef',
@@ -57,15 +46,15 @@ has interfaces => (
   auto_deref => 1,
 );
 
-=item location: readonly required string
+=item location
 
-The physical location (datacenter, etc.) of this host.
+The name of the network location of this host
 
 =cut
 
 has location => (is => 'ro', isa => 'Str', required => 1);
 
-=item world_ip: readonly calculated string
+=method world_ip
 
 The C<world> location IP address for this host.
 
@@ -77,10 +66,9 @@ sub world_ip {
   $if->[0];
 }
 
-=item fqdn: readonly calculated string
+=method fqdn
 
-The fully-qualified domain name of this host.
-
+This is the fully-qualified domain name of this host.
 
 =cut
 
@@ -88,27 +76,6 @@ sub fqdn {
   my ($self) = @_;
   sprintf '%s.%s', $self->hostname, $self->domain;
 }
-
-=item meta
-
-Moose meta object.
-
-=cut
-
-=back
-
-=head1 METHODS
-
-=over 4
-
-=item as_data_lines
-
-Generates A records for this hostname and all of its aliases, and generates SOA
-and NS records for all of this node's IP addresses.
-
-=back
-
-=cut
 
 sub _family_names {
   my ($self) = @_;

@@ -1,6 +1,9 @@
 package DNS::Oterica::Hub;
-# ABSTRACT: DNSO hub. has locations and node families.
+# ABSTRACT: the center of control for a DNS::Oterica system
+
 use Moose;
+with 'DNS::Oterica::Role::RecordMaker';
+
 # use MooseX::AttributeHelpers;
 
 use DNS::Oterica::Location;
@@ -8,6 +11,14 @@ use DNS::Oterica::Node;
 use DNS::Oterica::Node::Domain;
 use DNS::Oterica::Node::Host;
 use DNS::Oterica::NodeFamily;
+
+=head1 OVERVIEW
+
+The hub is the central collector of DNS::Oterica data.  All new entries are
+given to the hub to collect.  The hub takes care of preventing duplicates and
+keeping data synchronized.
+
+=cut
 
 has [ qw(_domain_registry _loc_registry _node_family_registry) ] => (
   is  => 'ro',
@@ -36,11 +47,29 @@ sub BUILD {
   });
 }
 
+=method domain
+
+  my $new_domain = $hub->domain($name => \%arg);
+
+  my $domain = $hub->domain($name);
+
+This method will return a domain found by name, or if C<\%arg> is given, will
+create a new domain.
+
+If no domain is found and C<\%arg> is not given, an exception is raised.
+
+If C<\%arg> is given for a domain that already exists, an exception is raised.
+
+=cut
+
 sub domain {
   my ($self, $name, $arg) = @_;
   my $domreg = $self->_domain_registry;
 
   confess "tried to create domain $name twice" if $domreg->{$name} and $arg;
+
+  # XXX: This should be possible to do. -- rjbs, 2009-09-11
+  # confess "no such domain: $name" if ! defined $arg and ! $domreg->{$name};
 
   return $domreg->{$name} ||= DNS::Oterica::Node::Domain->new({
     domain => $name,
@@ -49,10 +78,28 @@ sub domain {
   });
 }
 
+=method location
+
+  my $loc = $hub->location($name);
+
+This method finds the named location and returns it.  If no location for the
+given name is registered, an exception is raised.
+
+=cut
+
 sub location {
   my ($self, $name) = @_;
   return $self->_loc_registry->{$name} || confess "no such location '$name'";
 }
+
+=method add_location
+
+  my $loc = $hub->add_location(\%arg);
+
+This registers a new location, raising an exception if one already exists for
+the given name.
+
+=cut
 
 sub add_location {
   my ($self, $arg) = @_;
@@ -63,6 +110,16 @@ sub add_location {
 
   $self->_loc_registry->{$name} = $loc;
 }
+
+=method host
+
+  my $host = $hub->host($domain_name, $hostname);
+
+  my $new_host = $hub->host($domain_name, $hostname, \%arg);
+
+This method will find or create a host, much like the C<L</domain>> method.
+
+=cut
 
 sub host {
   my ($self, $domain_name, $name, $arg) = @_;
@@ -79,6 +136,14 @@ sub host {
   });
 }
 
+=method nodes
+
+This method will return a list of all nodes registered with the system.
+
+B<Warning>: at present this will return only hosts.
+
+=cut
+
 sub nodes {
   my ($self) = @_;
 
@@ -91,12 +156,30 @@ sub nodes {
   return @nodes;
 }
 
+=method node_family
+
+  my $family = $hub->node_family($family_name);
+
+This method will return the named familiy.  If no such family exists, an
+exception will be raised.
+
+=cut
+
 sub node_family {
   my ($self, $name) = @_;
 
   return $self->_node_family_registry->{$name}
       || confess "unknown family $name";
 }
+
+=method node_families
+
+  my @families = $hub->node_families;
+
+This method will return all node families.  (These are set up during hub
+initialization.)
+
+=cut
 
 sub node_families {
   my ($self) = @_;

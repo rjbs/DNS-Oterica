@@ -1,15 +1,12 @@
 package DNS::Oterica::NodeFamily;
-# ABSTRACT: DNSO node family. Has lots of nodes.
+# ABSTRACT: a group of hosts that share common functions
 use Moose;
 
-with 'DNS::Oterica::Role::RecordMaker';
+=attr nodes
 
-has hub => (
-  is   => 'ro',
-  isa  => 'DNS::Oterica::Hub',
-  weak_ref => 1,
-  required => 1,
-);
+This is an arrayref of the node objects that are in this family.
+
+=cut
 
 has nodes => (
   is  => 'ro',
@@ -19,19 +16,54 @@ has nodes => (
   default    => sub { [] },
 );
 
+=method add_node
+
+  $family->add_node($node);
+
+This adds the given node to the family.
+
+=cut
+
+# XXX: do not allow dupes -- rjbs, 2009-09-11
 sub add_node {
   my ($self, $node) = @_;
   push @{ $self->nodes }, $node;
 }
 
+=method as_data_lines
+
+This method returns a list of lines of configuration.  By default it only
+generates begin and end marking comments.  This method is meant to be augmented
+by subclasses.
+
+=cut
+
 sub as_data_lines {
   my ($self) = @_;
-  my $string = "# begin family " . $self->name . "\n";
-  $string .= $_ for inner();
-  $string .= "# end family " . $self->name . "\n";
 
-  return $string;
+  my @lines;
+
+  push @lines, $self->rec->comment("begin family " . $self->name);
+  push @lines, $_ for inner();
+  push @lines, $self->rec->comment("end family " . $self->name);
+
+  return @lines;
 }
+
+=attr hub
+
+This is the hub object into which the family was registered.
+
+=cut
+
+has hub => (
+  is   => 'ro',
+  isa  => 'DNS::Oterica::Hub',
+  weak_ref => 1,
+  required => 1,
+  # handles  => 'DNS::Oterica::Role::RecordMaker',
+  handles  => [ qw(rec) ],
+);
 
 __PACKAGE__->meta->make_immutable;
 no Moose;

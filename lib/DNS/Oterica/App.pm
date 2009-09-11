@@ -1,15 +1,31 @@
 package DNS::Oterica::App;
 # ABSTRACT: the code behind `dnsoterica`
+
 use Moose;
 use DNS::Oterica::Hub;
 use File::Find::Rule;
 use YAML::XS ();
+
+=attr hub
+
+This is the L<DNS::Oterica::Hub> into which entries will be loaded.
+
+=cut
 
 has hub => (
   is  => 'ro',
   isa => 'DNS::Oterica::Hub',
   default => sub { DNS::Oterica::Hub->new },
 );
+
+=attr root
+
+This is a directory in which F<dnsoterica> will look for configuration files.
+
+It will look in the subdirectory F<domains> for domain definitions and F<hosts>
+for hosts.
+
+=cut
 
 has root => (
   is       => 'ro',

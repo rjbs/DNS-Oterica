@@ -1,21 +1,12 @@
 use strict;
 use warnings;
-package DNS::Oterica::Util::RecordMaker;
+package DNS::Oterica::RecordMaker::TinyDNS;
 # ABSTRACT: a tinydns recordmaker for DNSO.
-
-=head1 NAME
-
-DNS::Oterica::Util::RecordMaker -- tinydns recordmaker for DNS::Oterica
 
 =head1 DESCRIPTION
 
-This role provides logic for generating lines for the L<tinydns-data(8)>
-program to consume. It expects to be called via the
-L<DNS::Oterica::Role::RecordMaker> delegator.
-
-=head1 METHODS
-
-=over 4
+This role provides logic for generating lines for the F<tinydns-data> program
+to consume.
 
 =cut
 

@@ -9,26 +9,17 @@ use DNS::Oterica::Util::RecordMaker;
 C<DNS::Oterica::Role::RecordMaker> delegates to an underlying record maker. It
 exposes this record maker with its C<rec> method.
 
-=head1 METHODS
+=attr rec
 
-=over 4
-
-=item rec
-
-Returns the record maker, e.g. L<DNS::Oterica::Util::RecordMaker>.
+The record maker, e.g. L<DNS::Oterica::Util::RecordMaker>.
 
 =cut
 
-sub rec { 'DNS::Oterica::Util::RecordMaker' }
-
-=item meta
-
-Moose meta object.
-
-=back
-
-=cut
-
+has rec => (
+  is  => 'ro',
+  isa => 'Str', # XXX or object doing role, etc
+  default => 'DNS::Oterica::Util::RecordMaker',
+);
 
 no Moose::Role;
 1
