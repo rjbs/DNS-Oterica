@@ -46,7 +46,7 @@ has interfaces => (
   auto_deref => 1,
 );
 
-=item location
+=attr location
 
 The name of the network location of this host
 
