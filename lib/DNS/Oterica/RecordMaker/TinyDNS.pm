@@ -62,7 +62,7 @@ sub _generic {
   return @lines;
 }
 
-=item a_and_ptr
+=method a_and_ptr
 
 Generate an C<=> line, the bread and butter A and PTR record pair for a
 hostname and IP.
@@ -79,7 +79,7 @@ sub a_and_ptr {
   );
 }
 
-=item ptr
+=method ptr
 
 Generate an C<^> line, for the reverse DNS of an IP address.
 
