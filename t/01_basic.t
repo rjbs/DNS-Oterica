@@ -28,16 +28,12 @@ my @methods = qw(
 ok(ref $dnso->can($_) eq 'CODE', "DNSO object can $_") for @methods; 
 
 lives_ok { $dnso->hub->add_location($_) } "can add $_->{name}" for (
-  { name => 'quonix',      code => '',    network => '208.72.237.0/24',
-    delegated => 1 },
-  { name => 'fastnet',     code => '',    network => '128.200.30/24',   },
-  { name => 'fastnet-dmz', code => '',    network => '192.168.10.0/24', },
-  { name => 'sd',          code => '',    network => '64.74.157.0/25'   },
-  { name => 'quonix-dmz',  code => 'qx',  network => '192.168.10.0/24'  },
-  { name => 'office',      code => ''   },
+  { name => 'megacenter', code => '', network => '10.1.0.0/24' },
+  { name => 'microport' , code => '', network => '10.2.0.0/24' },
 );
+
 lives_ok { $dnso->populate_domains($dnso_root) } "can populate domains";
-lives_ok { $dnso->populate_hosts($dnso_root) } "can populate hosts";
+lives_ok { $dnso->populate_hosts($dnso_root)   } "can populate hosts";
 
 my @nodes = map { $_->as_data_lines } $dnso->hub->nodes;
 my @node_families = map { $_->as_data_lines } $dnso->hub->node_families;

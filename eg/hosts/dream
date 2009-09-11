@@ -1,9 +1,8 @@
 hostname: dream
 domain: example.com
-location: fastnet
+location: megacenter
 ip:
-  world: 207.8.214.6 
-  fastnet-dmz: 2.3.4.5
+  world: 10.1.0.200
 families:
   - com.example.postlink
   - com.example.archiver

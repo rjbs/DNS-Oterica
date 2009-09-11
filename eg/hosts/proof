@@ -1,9 +1,8 @@
 hostname: proof
 domain: example.com
-location: fastnet
+location: microport
 ip:
-  world: 207.106.133.28 
-  fastnet-dmz: 1.2.3.4
+  world: 10.2.0.150
 families:
   - com.example.www
   - com.example.ns

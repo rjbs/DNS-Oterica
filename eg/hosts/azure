@@ -1,7 +1,7 @@
 hostname: azure
 domain: example.com
-location: quonix
+location: microport
 ip:
-  world: 208.72.237.55
+  world: 10.2.0.100
 families:
   - com.example.mx
