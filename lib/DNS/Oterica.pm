@@ -44,6 +44,20 @@ can emit more configuration.
 Please read L<DNS::Oterica::Tutorial|DNS::Oterica::Tutorial>, which may or may
 not yet exist.
 
+=head1 TODO
+
+There's a lot of stuff to do.
+
+ * determine location automatically based on IP
+ * reject IPs that do not match a location
+ * look into replacing nodefamily behavior with Moose roles
+ * rewrite tests to use Diagnostic recordmaker
+ * thorough tests for TinyDNS recordmaker
+ * handle split horizons
+ * simpler method to say "being in family X implies being in Y"
+ * means to replace Module::Pluggable with list of families to register
+ * means to track concepts like virts/zones, zonehosts, per-host interfaces
+
 =cut
 
 1;
