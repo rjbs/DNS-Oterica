@@ -6,7 +6,6 @@ use Carp;
 
 use IPC::System::Simple qw(system capture);
 use DNS::Oterica;
-use Regexp::Common 'net';
 
 my $records = {};
 
