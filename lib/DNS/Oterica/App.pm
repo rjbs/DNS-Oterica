@@ -27,6 +27,10 @@ sub BUILD {
 
   unless ($self->_has_hub) {
     $self->_set_hub( DNS::Oterica::Hub->new($arg->{hub_args} || {}) );
+    if (my $location_root = delete $arg->{location_root}) {
+      my @locs = map { YAML::XS::LoadFile $_ } glob "$location_root/*";
+      $self->hub->add_location($_) for @locs;
+    }
   }
 }
 
