@@ -17,12 +17,12 @@ my ($opts, $usage) = describe_options(
     { required => 1, } ],
   [ 'location-root=s', 'directory to get locations from',
     { required => 1, } ],
-  [ 'node-root=s', 'directory to get hosts and domains from',
+  [ 'root=s', 'directory to get hosts and domains from',
     { required => 1, } ],
 );
 
 my $app = DNS::Oterica::App->new(
-  root          => delete $opts->{node_root},
+  root          => delete $opts->{root},
   location_root => delete $opts->{location_root},
   hub_args      => $opts,
 );
