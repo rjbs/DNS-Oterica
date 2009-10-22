@@ -15,18 +15,16 @@ my ($opts, $usage) = describe_options(
     { required => 1, } ],
   [ 'hostmaster=s', 'hostmaster email',
     { required => 1, } ],
-  [ 'location-root=s', 'directory to get locations from',
-    { required => 1, } ],
   [ 'root=s', 'directory to get hosts and domains from',
     { required => 1, } ],
 );
 
 my $app = DNS::Oterica::App->new(
   root          => delete $opts->{root},
-  location_root => delete $opts->{location_root},
   hub_args      => $opts,
 );
 
+$app->populate_locations;
 $app->populate_domains;
 $app->populate_hosts;
 

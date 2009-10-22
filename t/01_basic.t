@@ -17,13 +17,9 @@ my $dnso = new_ok 'DNS::Oterica::App', [ {
   },
 } ];
 
-$dnso->hub->add_location($_) for (
-  { name => 'megacenter', code => '', network => '10.1.0.0/24' },
-  { name => 'microport' , code => '', network => '10.2.0.0/24' },
-);
-
-$dnso->populate_domains($dnso_root);
-$dnso->populate_hosts($dnso_root);
+$dnso->populate_locations;
+$dnso->populate_domains;
+$dnso->populate_hosts;
 
 my @nodes = map { $_->as_data_lines } $dnso->hub->nodes;
 my @node_families = map { $_->as_data_lines } $dnso->hub->node_families;

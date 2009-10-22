@@ -28,10 +28,6 @@ sub BUILD {
   unless ($self->_has_hub) {
     my %args = %{$arg->{hub_args}};
     $self->_set_hub( DNS::Oterica::Hub->new(\%args || {}) );
-    if (my $location_root = delete $arg->{location_root}) {
-      my @locs = map { YAML::XS::LoadFile $_ } glob "$location_root/*";
-      $self->hub->add_location($_) for @locs;
-    }
   }
 }
 
@@ -48,6 +44,17 @@ has root => (
   is       => 'ro',
   required => 1,
 );
+
+sub populate_locations {
+  my ($self) = @_;
+
+  my $root = $self->root;
+  for my $file (File::Find::Rule->file->in("$root/locations")) {
+    for my $data (YAML::XS::LoadFile($file)) {
+      $self->hub->add_location($data);
+    }
+  }
+}
 
 sub populate_domains {
   my ($self) = @_;
