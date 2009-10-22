@@ -10,17 +10,18 @@ use Getopt::Long::Descriptive;
 use YAML::XS ();
 
 my ($opts, $usage) = describe_options(
-  "usage: %c %o",
+  "usage: %c %o <root>",
   [ 'ns-family=s', 'DNS::Oterica node family for NS records',
     { required => 1, } ],
   [ 'hostmaster=s', 'hostmaster email',
     { required => 1, } ],
-  [ 'root=s', 'directory to get hosts and domains from',
-    { required => 1, } ],
 );
 
+my $root = shift @ARGV;
+$usage->die if @ARGV;
+
 my $app = DNS::Oterica::App->new(
-  root          => delete $opts->{root},
+  root          => $root,
   hub_args      => $opts,
 );
 
