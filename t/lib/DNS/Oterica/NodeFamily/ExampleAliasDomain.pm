@@ -13,14 +13,14 @@ augment as_data_lines => sub {
   my ($self) = @_;
   my @lines;
 
-  my %mx_nodes = $self->hub->node_family('com.example.mx')->mx_nodes;
+  my $mx_nodes = $self->hub->node_family('com.example.mx')->mx_nodes;
 
   for my $node ($self->nodes) {
-    for my $mx (keys %mx_nodes) {
+    for my $mx (keys %$mx_nodes) {
       push @lines, $self->rec->mx({
         name => $node->fqdn,
         mx   => $mx,
-        node => $mx_nodes{$mx},
+        node => $mx_nodes->{$mx},
       });
     }
   }

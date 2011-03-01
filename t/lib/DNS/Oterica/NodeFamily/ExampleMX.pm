@@ -8,7 +8,6 @@ has mx_nodes => (
   is  => 'ro',
   isa => 'HashRef',
   default    => sub { {} },
-  auto_deref => 1,
 );
 
 after add_node => sub {
@@ -25,11 +24,11 @@ augment as_data_lines => sub {
   my ($self) = @_;
   my @lines;
 
-  my %mx = $self->mx_nodes;
-  for my $mxname (sort keys %mx) {
+  my $mx = $self->mx_nodes;
+  for my $mxname (sort keys %$mx) {
     push @lines, $self->rec->a({
       name => $mxname,
-      node => $mx{$mxname},
+      node => $mx->{$mxname},
     });
   }
   return @lines;
