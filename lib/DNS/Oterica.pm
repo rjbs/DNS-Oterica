@@ -1,10 +1,7 @@
 use strict;
 use warnings;
 package DNS::Oterica;
-
-=head1 NAME
-
-DNS::Oterica - build dns configuration more easily
+# ABSTRACT: build dns configuration more easily
 
 =head1 WARNING
 

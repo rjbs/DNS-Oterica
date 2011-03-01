@@ -1,6 +1,6 @@
 package DNS::Oterica::Role::RecordMaker;
-# ABSTRACT: a delegation class for the DNSO recordmaker.
 use Moose::Role;
+# ABSTRACT: a delegation class for the DNSO recordmaker.
 
 use DNS::Oterica::RecordMaker::TinyDNS;
 
