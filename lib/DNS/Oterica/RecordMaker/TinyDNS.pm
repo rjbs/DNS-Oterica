@@ -12,6 +12,10 @@ to consume.
 
 sub _default_ttl { 1800 }
 
+sub _serial_number {
+  return($ENV{DNS_OTERICA_SN} || $^T)
+}
+
 sub comment {
   my ($self, $comment) = @_;
 
@@ -54,7 +58,7 @@ sub _generic {
       $rec->{name},
       $if->[0],
       $rec->{ttl} || $self->_default_ttl,
-      $^T,
+      $self->_serial_number,
       $if->[1],
     ;
   }
@@ -101,7 +105,7 @@ sub ptr {
         $extended_arpa,
         $rec->{name},
         $rec->{ttl} || $self->_default_ttl,
-        $^T,
+        $self->_serial_number,
         $if->[1];
     }
     return @lines;
@@ -130,7 +134,7 @@ sub soa_and_ns_for_ip {
     $ns_1,
     $addr,
     $self->_default_ttl,
-    $^T,
+    $self->_serial_number,
     '',
   ;
 
@@ -173,7 +177,7 @@ sub mx {
       $mx_name,
       $rec->{dist} || 10,
       $rec->{ttl} || $self->_default_ttl,
-      $^T,
+      $self->_serial_number,
       $if->[1],
     ;
   }
@@ -195,7 +199,7 @@ sub domain {
     $rec->{ip} || '',
     $rec->{ns},
     $rec->{ttl} || $self->_default_ttl,
-    $^T,
+    $self->_serial_number,
     '',
   ;
 
@@ -212,7 +216,7 @@ sub soa_and_ns {
     $rec->{ns} || '',
     $rec->{node}->hub->soa_rname,
     $rec->{ttl} || $self->_default_ttl,
-    $^T,
+    $self->_serial_number,
     '',
   ;
 
@@ -230,7 +234,7 @@ sub cname {
     $rec->{cname},
     $rec->{domain} || '',
     $rec->{ttl} || $self->_default_ttl,
-    $^T,
+    $self->_serial_number,
     '',
   ;
 
@@ -246,7 +250,7 @@ sub txt {
     $rec->{node}->fqdn,
     $rec->{text},
     $rec->{ttl} || $self->_default_ttl,
-    $^T,
+    $self->_serial_number,
     '',
   ;
 
