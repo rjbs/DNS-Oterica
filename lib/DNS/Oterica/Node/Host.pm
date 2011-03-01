@@ -54,6 +54,16 @@ The name of the network location of this host
 
 has location => (is => 'ro', isa => 'Str', required => 1);
 
+=attr ttl
+
+This is the default TTL for the host's A records -- it doesn't affect the TTL
+for records created by families to which the host belongs.  If not provided,
+it will be unset, and the default TTL is used.
+
+=cut
+
+has ttl => (is => 'ro', isa => 'Int');
+
 =method world_ip
 
 The C<world> location IP address for this host.
@@ -94,8 +104,19 @@ sub as_data_lines {
     "  families: " . join(q{, }, $self->_family_names)
   );
 
-  push @lines, $self->rec->a_and_ptr({ name => $self->fqdn, node => $self });
-  push @lines, $self->rec->a({ name => $_, node => $self }) for $self->aliases;
+  push @lines, $self->rec->a_and_ptr({
+    name => $self->fqdn,
+    node => $self,
+    ttl  => scalar $self->ttl,
+  });
+
+  for ($self->aliases) {
+    push @lines, $self->rec->a({
+      name => $_,
+      node => $self,
+      ttl  => scalar $self->ttl,
+    });
+  }
 
   push @lines, $self->rec->comment("end host ". $self->fqdn . "\n");
 

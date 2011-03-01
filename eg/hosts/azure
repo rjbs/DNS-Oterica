@@ -1,6 +1,7 @@
 hostname: azure
 domain: example.com
 location: microport
+ttl: 1234
 ip:
   world: 10.2.0.100
 families:
