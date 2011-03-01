@@ -9,11 +9,14 @@ This is an arrayref of the node objects that are in this family.
 =cut
 
 has nodes => (
-  is  => 'ro',
   isa => 'ArrayRef',
-  auto_deref => 1,
   init_arg   => undef,
   default    => sub { [] },
+  traits   => [ 'Array' ],
+  handles  => {
+    nodes      => 'elements',
+    _push_node => 'push',
+  },
 );
 
 =method add_node
@@ -27,7 +30,8 @@ This adds the given node to the family.
 # XXX: do not allow dupes -- rjbs, 2009-09-11
 sub add_node {
   my ($self, $node) = @_;
-  push @{ $self->nodes }, $node;
+
+  $self->_push_node( $node );
 }
 
 =method as_data_lines

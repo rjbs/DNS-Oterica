@@ -21,14 +21,18 @@ has hostname => (is => 'ro', isa => 'Str', required => 1);
 
 This is an arrayref of other fully-qualified names that refer to this host.
 
+The accessor returns a list.
+
 =cut
 
 has aliases  => (
-  is => 'ro',
   isa => 'ArrayRef',
-  required   => 1,
-  auto_deref => 1,
-  default    => sub { [] },
+  required => 1,
+  default  => sub { [] },
+  traits   => [ 'Array' ],
+  handles  => {
+    aliases => 'elements',
+  },
 );
 
 =attr interfaces
@@ -40,10 +44,12 @@ This attribute is pretty likely to change later.
 =cut
 
 has interfaces => (
-  is  => 'ro',
   isa => 'ArrayRef',
-  required   => 1,
-  auto_deref => 1,
+  required => 1,
+  traits   => [ 'Array' ],
+  handles  => {
+    interfaces => 'elements',
+  },
 );
 
 =attr location

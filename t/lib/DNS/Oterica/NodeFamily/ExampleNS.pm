@@ -8,7 +8,6 @@ has ns_nodes => (
   is  => 'ro',
   isa => 'HashRef',
   default    => sub { {} },
-  auto_deref => 1,
 );
 
 after add_node => sub {
@@ -25,15 +24,15 @@ augment as_data_lines => sub {
   my ($self) = @_;
   my @lines;
 
-  my %ns = $self->ns_nodes;
-  for my $name (sort keys %ns) {
+  my $ns = $self->ns_nodes;
+  for my $name (sort keys %$ns) {
     push @lines, $self->rec->a({
       name => $name,
-      node => $ns{$name},
+      node => $ns->{$name},
     });
     push @lines, $self->rec->a({
       name => 'mydns.ns.example.com',
-      node => $ns{$name},
+      node => $ns->{$name},
     });
   }
 
