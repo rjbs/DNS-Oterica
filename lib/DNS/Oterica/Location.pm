@@ -55,6 +55,8 @@ has delegated => (is => 'ro', isa => 'Bool', required => 0, default => 0);
 
 has code => (is => 'ro', isa => 'Str', required => 1);
 
+with 'DNS::Oterica::Role::HasHub';
+
 __PACKAGE__->meta->make_immutable;
 no Moose;
 1;

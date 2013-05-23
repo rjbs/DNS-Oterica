@@ -80,20 +80,7 @@ sub as_data_lines {
   return;
 }
 
-=attr hub
-
-This is the DNS::Oterica::Hub object into which the node was registered.
-
-=cut
-
-has hub => (
-  is  => 'ro',
-  isa => 'DNS::Oterica::Hub',
-  required => 1,
-  weak_ref => 1,
-  # handles  => 'DNS::Oterica::Role::RecordMaker',
-  handles  => [ qw(rec) ],
-);
+with 'DNS::Oterica::Role::HasHub';
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
