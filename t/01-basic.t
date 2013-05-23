@@ -40,8 +40,8 @@ ok(exists $records->{$_}{'Z'}, "$_ has a Z record") for @domains;
 is_deeply(
   [ sort @locations ],
   [
-    "%10.1:mc\n",
-    "%10.2.0:mp\n",
+    "%mc:10.1\n",
+    "%mp:10.2.0\n",
   ],
   "location lines are as expected",
 );

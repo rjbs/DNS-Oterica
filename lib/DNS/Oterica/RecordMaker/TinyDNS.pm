@@ -49,7 +49,7 @@ sub location {
   my $hunks  = $location->network->prefixlen / 8;
   my $prefix = join q{.}, splice(@quads, 0, $hunks);
 
-  my $str = sprintf "%%%s:%s\n", $prefix, $location->code;
+  my $str = sprintf "%%%s:%s\n", $location->code, $prefix;
 }
 
 sub __ip_locode_pairs {
