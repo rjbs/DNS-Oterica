@@ -147,14 +147,33 @@ the given name.
 
 sub add_location {
   my ($self, $arg) = @_;
+
   my $loc = DNS::Oterica::Location->new({ %$arg, hub => $self });
 
   my $name = $loc->name;
   confess "tried to create $name twice" if $self->_loc_registry->{$name};
 
   my $code = $loc->code;
-  confess "tried to create zone with code '$code' twice"
-    if grep { $code eq $_->code } $self->locations;
+  my $net  = $loc->network;
+
+  my @errors;
+  for my $existing ($self->locations) {
+    if ($loc->code eq $existing->code) {
+      push @errors, sprintf "code '%s' conflicts with location %s",
+        $code, $existing->name;
+    }
+
+    next if $existing->name eq 'world';
+
+    if ($net->overlaps($existing->network) == $Net::IP::IP_IDENTICAL) {
+      push @errors, sprintf "network '%s' conflicts with location %s (%s)",
+        $net->ip, $existing->name, $existing->network->ip;
+    }
+  }
+
+  if (@errors) {
+    confess("errors registering location $name: " . join q{; }, @errors);
+  }
 
   $self->_loc_registry->{$name} = $loc;
 }
