@@ -124,6 +124,17 @@ sub location {
   return $self->_loc_registry->{$name} || confess "no such location '$name'";
 }
 
+=method locations
+
+  my @loc = $hub->locations;
+
+=cut
+
+sub locations {
+  my ($self) = @_;
+  return values %{ $self->_loc_registry };
+}
+
 =method add_location
 
   my $loc = $hub->add_location(\%arg);
