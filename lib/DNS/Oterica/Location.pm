@@ -50,6 +50,11 @@ sub BUILD {
   }
 }
 
+sub as_data_lines {
+  my ($self) = @_;
+  $self->hub->rec->location($self);
+}
+
 # Do we really want to keep this?
 has delegated => (is => 'ro', isa => 'Bool', required => 0, default => 0);
 

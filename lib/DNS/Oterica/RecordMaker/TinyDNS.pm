@@ -16,10 +16,40 @@ sub _serial_number {
   return($ENV{DNS_OTERICA_SN} || $^T)
 }
 
+=method comment
+
+  my $line = $rec->comment("Hello, world!");
+
+This returns a line that is a one-line commment.
+
+=cut
+
 sub comment {
   my ($self, $comment) = @_;
 
   return "# $comment\n";
+}
+
+=method location
+
+This returns a location line.
+
+=cut
+
+sub location {
+  my ($self, $location) = @_;
+
+  return unless length $location->code;
+  return if length $location->network->prefixlen == 0; # !?
+
+  Carp::confess("location codes must be two-character")
+    unless length $location->code == 2;
+
+  my @quads  = split /\./, $location->network->prefix;
+  my $hunks  = $location->network->prefixlen / 8;
+  my $prefix = join q{.}, splice(@quads, 0, $hunks);
+
+  my $str = sprintf "%%%s:%s\n", $prefix, $location->code;
 }
 
 sub __ip_locode_pairs {
