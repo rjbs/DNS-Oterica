@@ -73,9 +73,10 @@ sub BUILD {
         = $plugin->new({ hub => $self });
   }
 
-  $self->_loc_registry->{world} = DNS::Oterica::Location->new({
+  $self->add_location({
     name => 'world',
     code => '',
+    network => '0.0.0.0/0',
   });
 }
 
