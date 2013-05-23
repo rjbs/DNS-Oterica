@@ -42,6 +42,14 @@ has 'network' => (
   coerce   => 1,
 );
 
+sub BUILD {
+  my ($self) = @_;
+  my $network = $self->network;
+  unless (grep { $_ == $network->prefixlen } qw(0 8 16 24 32)) {
+    confess("non-power-of-two network length");
+  }
+}
+
 # Do we really want to keep this?
 has delegated => (is => 'ro', isa => 'Bool', required => 0, default => 0);
 
