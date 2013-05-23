@@ -25,13 +25,7 @@ sub comment {
 sub __ip_locode_pairs {
   my ($self, $rec) = @_;
 
-  if ($rec->{node} and $rec->{ip} || $rec->{loc}) {
-    Carp::confess('provide either a node or an ip/loc, not both');
-  }
-
-  if (not $rec->{node} || $rec->{ip}) {
-    Carp::confess('provide either a node or an ip/loc');
-  }
+  Carp::confess('no node provided') unless $rec->{node};
 
   # This is what we'd do to emit one record per interface to implement a split
   # horizon in the tinydns data file.  This is probably not what we want to end
@@ -41,11 +35,9 @@ sub __ip_locode_pairs {
 
   return
     map  {; [ $_->[0] => $_->[1]->code ] }
-    grep { $_->[1]->name eq 'world' }
+    # grep { $_->[1]->name eq 'world' }
     $rec->{node}->interfaces
     if $rec->{node};
-
-  return [ $rec->{ip}, $rec->{loc} || '' ];
 }
 
 sub _generic {
