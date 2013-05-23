@@ -33,7 +33,7 @@ $app->populate_hosts;
 
 my @nodes = sort { $a->fqdn cmp $b->fqdn } $app->hub->nodes;
 
-print $_->as_data_lines for $app->hub->locations;
+print sort map {; $_->as_data_lines } $app->hub->locations;
 print "\n";
 print $_->as_data_lines for @nodes;
 print "\n";

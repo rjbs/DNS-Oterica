@@ -39,9 +39,6 @@ This returns a location line.
 sub location {
   my ($self, $location) = @_;
 
-  return unless length $location->code;
-  return if length $location->network->prefixlen == 0; # !?
-
   Carp::confess("location codes must be two-character")
     unless length $location->code == 2;
 
@@ -65,7 +62,6 @@ sub __ip_locode_pairs {
 
   return
     map  {; [ $_->[0] => $_->[1]->code ] }
-    # grep { $_->[1]->name eq 'world' }
     $rec->{node}->interfaces
     if $rec->{node};
 }

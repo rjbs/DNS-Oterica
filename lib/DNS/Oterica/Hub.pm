@@ -75,7 +75,7 @@ sub BUILD {
 
   $self->add_location({
     name => 'world',
-    code => '',
+    code => 'WW',
     network => '0.0.0.0/0',
   });
 }
