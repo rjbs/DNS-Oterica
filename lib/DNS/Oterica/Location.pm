@@ -12,7 +12,7 @@ subtype 'DNS::Oterica::Type::Network'
 
 coerce 'DNS::Oterica::Type::Network'
   => from 'Str'
-  => via { Net::IP->new($_) };
+  => via { Net::IP->new($_) || confess( Net::IP::Error() ) };
 
 =head1 OVERVIEW
 
