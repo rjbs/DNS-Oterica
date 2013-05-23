@@ -152,6 +152,10 @@ sub add_location {
   my $name = $loc->name;
   confess "tried to create $name twice" if $self->_loc_registry->{$name};
 
+  my $code = $loc->code;
+  confess "tried to create zone with code '$code' twice"
+    if grep { $code eq $_->code } $self->locations;
+
   $self->_loc_registry->{$name} = $loc;
 }
 
