@@ -36,4 +36,16 @@ my @domains = qw/lists.codesimply.com example.com foobox.com/;
 ok(exists $records->{$_}{'+'}, "$_ has a + record") for @hosts;
 ok(exists $records->{$_}{'Z'}, "$_ has a Z record") for @domains;
 
+subtest "per-location IPs" => sub {
+  my @azure_lines = grep {; /\A\+azure/ } @nodes;
+  my @world_lines = grep {;   /:$/ } @azure_lines;
+  my @other_lines = grep {; ! /:$/ } @azure_lines;
+
+  is(@azure_lines, 2, "azure has 2 IPs");
+  is(@world_lines, 1, "one is a world IP");
+  is(@other_lines, 1, "one is not");
+  like($world_lines[0], qr/10\.20\.0\.100/, "the non-world is 10.20.0.100");
+  like($other_lines[0], qr/10\.2\.0\.2/,    "the non-world is 10.2.0.2");
+};
+
 done_testing;

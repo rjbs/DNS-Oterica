@@ -1,4 +1,4 @@
 ---
 name: megacenter
-code: ""
+code: mc
 network: 10.1.0.0/24
