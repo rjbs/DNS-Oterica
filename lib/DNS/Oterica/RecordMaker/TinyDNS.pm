@@ -54,16 +54,9 @@ sub __ip_locode_pairs {
 
   Carp::confess('no node provided') unless $rec->{node};
 
-  # This is what we'd do to emit one record per interface to implement a split
-  # horizon in the tinydns data file.  This is probably not what we want to end
-  # up doing.  -- rjbs, 2008-12-12
-  # return map {; [ $_->[0] => $_->[1]->code ] } $rec->{node}->interfaces
-  #   if $rec->{node};
-
   return
     map  {; [ $_->[0] => $_->[1]->code ] }
-    $rec->{node}->interfaces
-    if $rec->{node};
+    $rec->{node}->interfaces;
 }
 
 sub _generic {
