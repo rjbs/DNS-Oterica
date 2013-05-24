@@ -78,6 +78,12 @@ sub BUILD {
     code => 'WW',
     network => '0.0.0.0/0',
   });
+
+  $self->add_location({
+    name => 'always-visible',
+    code => '',
+    network => '0.0.0.0/32',
+  });
 }
 
 =method domain
@@ -163,7 +169,7 @@ sub add_location {
         $code, $existing->name;
     }
 
-    next if $existing->name eq 'world';
+    next if $existing->name eq 'always-visible';
 
     if ($net->overlaps($existing->network) == $Net::IP::IP_IDENTICAL) {
       push @errors, sprintf "network '%s' conflicts with location %s (%s)",

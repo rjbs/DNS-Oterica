@@ -48,15 +48,19 @@ is_deeply(
 );
 
 subtest "per-location IPs" => sub {
-  my @azure_lines = grep {; /\A\+azure/ } @nodes;
-  my @world_lines = grep {;   /:WW$/ } @azure_lines;
-  my @other_lines = grep {; ! /:WW$/ } @azure_lines;
+  my @azure_lines  = grep {; /\A\+azure/ } @nodes;
+  my @world_lines  = grep {; /:WW$/ } @azure_lines;
+  my @micro_lines  = grep {; /:mp$/ } @azure_lines;
+  my @always_lines = grep {; /:$/   } @azure_lines;
 
-  is(@azure_lines, 2, "azure has 2 IPs");
+  is(@azure_lines, 3, "azure has 2 IPs");
   is(@world_lines, 1, "one is a world IP");
-  is(@other_lines, 1, "one is not");
-  like($world_lines[0], qr/10\.20\.0\.100/, "the non-world is 10.20.0.100");
-  like($other_lines[0], qr/10\.2\.0\.2/,    "the non-world is 10.2.0.2");
+  is(@micro_lines, 1, "one is a microport IP");
+  is(@always_lines, 1, "one is always visible");
+
+  like($world_lines[0],  qr/10\.20\.0\.100/, "the non-world is 10.20.0.100");
+  like($micro_lines[0],  qr/10\.2\.0\.2/,    "the microport is 10.2.0.2");
+  like($always_lines[0], qr/10\.99\.88\.77/, "the omnipresent is 10.99.88.77");
 };
 
 done_testing;
