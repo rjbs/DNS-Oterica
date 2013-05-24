@@ -5,6 +5,6 @@ ttl: 1234
 ip:
   world: 10.20.0.100
   microport: 10.2.0.2
-  always-visible: 10.99.88.77
+  always: 10.99.88.77
 families:
   - com.example.mx

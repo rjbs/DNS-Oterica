@@ -39,7 +39,7 @@ This returns a location line.
 sub location {
   my ($self, $location) = @_;
 
-  return if $location->code eq '' and $location->name eq 'always-visible';
+  return if $location->code eq '';
 
   Carp::confess("location codes must be two-character")
     unless length $location->code == 2;

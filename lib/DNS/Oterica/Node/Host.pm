@@ -70,18 +70,6 @@ it will be unset, and the default TTL is used.
 
 has ttl => (is => 'ro', isa => 'Int');
 
-=method world_ip
-
-The C<world> location IP address for this host.
-
-=cut
-
-sub world_ip {
-  my ($self) = @_;
-  my ($if) = grep { $_->[1]->name eq 'world' } $self->interfaces;
-  $if->[0];
-}
-
 =method fqdn
 
 This is the fully-qualified domain name of this host.

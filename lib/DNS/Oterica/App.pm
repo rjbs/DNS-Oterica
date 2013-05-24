@@ -77,23 +77,27 @@ sub populate_domains {
 sub populate_hosts {
   my ($self) = @_;
   my $root = $self->root;
+  my $hub  = $self->hub;
+
   for my $file (File::Find::Rule->file->in("$root/hosts")) {
     for my $data (YAML::XS::LoadFile($file)) {
-      my $location = $self->hub->location($data->{location});
+      my $location = $hub->location($data->{location});
 
       my $interfaces;
       if (ref $data->{ip}) {
         $interfaces = [
           map {;
             [
-            $data->{ip}{$_} => $self->hub->location($_) ] 
+            $data->{ip}{$_} => $hub->location($_) ]
           } keys %{ $data->{ip}}
         ];
       } else {
-        $interfaces = [ [ $data->{ip} => $self->hub->location('world') ] ];
+        $interfaces = [
+          [ $data->{ip} => $hub->location( $hub->world_location_name ) ]
+        ];
       }
 
-      my $node = $self->hub->host(
+      my $node = $hub->host(
         $data->{domain},
         $data->{hostname},
         {
@@ -105,7 +109,7 @@ sub populate_hosts {
       );
 
       for my $name (@{ $data->{families} }) {
-        my $family = $self->hub->node_family($name);
+        my $family = $hub->node_family($name);
 
         $node->add_to_family($family);
       }

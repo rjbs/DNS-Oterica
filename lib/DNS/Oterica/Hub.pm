@@ -63,6 +63,9 @@ use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;
 
+has world_location_name  => (is => 'ro', isa => 'Str', default => 'world');
+has always_location_name => (is => 'ro', isa => 'Str', default => 'always');
+
 sub BUILD {
   my ($self) = @_;
 
@@ -74,13 +77,13 @@ sub BUILD {
   }
 
   $self->add_location({
-    name => 'world',
-    code => 'WW',
+    name => $self->world_location_name,
+    code => 'WW', # should it be configurable?  eh.
     network => '0.0.0.0/0',
   });
 
   $self->add_location({
-    name => 'always-visible',
+    name => $self->always_location_name,
     code => '',
     network => '0.0.0.0/32',
   });
@@ -169,7 +172,7 @@ sub add_location {
         $code, $existing->name;
     }
 
-    next if $existing->name eq 'always-visible';
+    next if $existing->name eq $self->always_location_name;
 
     if ($net->overlaps($existing->network) == $Net::IP::IP_IDENTICAL) {
       push @errors, sprintf "network '%s' conflicts with location %s (%s)",
