@@ -12,7 +12,7 @@ subtype 'DNS::Oterica::Type::Network'
 
 coerce 'DNS::Oterica::Type::Network'
   => from 'Str'
-  => via { Net::IP->new($_) };
+  => via { Net::IP->new($_) || confess( Net::IP::Error() ) };
 
 =head1 OVERVIEW
 
@@ -38,14 +38,39 @@ This is the C<Net::IP> range for the network at this location.
 has 'network' => (
   is   => 'ro',
   isa  => 'DNS::Oterica::Type::Network',
-  required => 0,
+  required => 1,
   coerce   => 1,
 );
+
+sub BUILD {
+  my ($self) = @_;
+  my $network = $self->network;
+  unless (grep { $_ == $network->prefixlen } qw(0 8 16 24 32)) {
+    confess("non-power-of-two network length");
+  }
+}
+
+sub _class_prefixes {
+  my ($self) = @_;
+
+  my @quads  = split /\./, $self->network->prefix;
+  my $hunks  = $self->network->prefixlen / 8;
+  my $prefix = join q{.}, splice(@quads, 0, $hunks);
+
+  return $prefix;
+}
+
+sub as_data_lines {
+  my ($self) = @_;
+  $self->hub->rec->location($self);
+}
 
 # Do we really want to keep this?
 has delegated => (is => 'ro', isa => 'Bool', required => 0, default => 0);
 
 has code => (is => 'ro', isa => 'Str', required => 1);
+
+with 'DNS::Oterica::Role::HasHub';
 
 __PACKAGE__->meta->make_immutable;
 no Moose;

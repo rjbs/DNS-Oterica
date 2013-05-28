@@ -16,36 +16,46 @@ sub _serial_number {
   return($ENV{DNS_OTERICA_SN} || $^T)
 }
 
+=method comment
+
+  my $line = $rec->comment("Hello, world!");
+
+This returns a line that is a one-line commment.
+
+=cut
+
 sub comment {
   my ($self, $comment) = @_;
 
   return "# $comment\n";
 }
 
+=method location
+
+This returns a location line.
+
+=cut
+
+sub location {
+  my ($self, $location) = @_;
+
+  return if $location->code eq '';
+
+  Carp::confess("location codes must be two-character")
+    unless length $location->code == 2;
+
+  my @prefixes = $location->_class_prefixes;
+  map { sprintf "%%%s:%s\n", $location->code, $_ } @prefixes;
+}
+
 sub __ip_locode_pairs {
   my ($self, $rec) = @_;
 
-  if ($rec->{node} and $rec->{ip} || $rec->{loc}) {
-    Carp::confess('provide either a node or an ip/loc, not both');
-  }
-
-  if (not $rec->{node} || $rec->{ip}) {
-    Carp::confess('provide either a node or an ip/loc');
-  }
-
-  # This is what we'd do to emit one record per interface to implement a split
-  # horizon in the tinydns data file.  This is probably not what we want to end
-  # up doing.  -- rjbs, 2008-12-12
-  # return map {; [ $_->[0] => $_->[1]->code ] } $rec->{node}->interfaces
-  #   if $rec->{node};
+  Carp::confess('no node provided') unless $rec->{node};
 
   return
     map  {; [ $_->[0] => $_->[1]->code ] }
-    grep { $_->[1]->name eq 'world' }
-    $rec->{node}->interfaces
-    if $rec->{node};
-
-  return [ $rec->{ip}, $rec->{loc} || '' ];
+    $rec->{node}->interfaces;
 }
 
 sub _generic {

@@ -63,6 +63,9 @@ use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;
 
+has world_location_name  => (is => 'ro', isa => 'Str', default => 'world');
+has always_location_name => (is => 'ro', isa => 'Str', default => 'always');
+
 sub BUILD {
   my ($self) = @_;
 
@@ -73,9 +76,16 @@ sub BUILD {
         = $plugin->new({ hub => $self });
   }
 
-  $self->_loc_registry->{world} = DNS::Oterica::Location->new({
-    name => 'world',
+  $self->add_location({
+    name => $self->world_location_name,
+    code => 'WW', # should it be configurable?  eh.
+    network => '0.0.0.0/0',
+  });
+
+  $self->add_location({
+    name => $self->always_location_name,
     code => '',
+    network => '0.0.0.0/32',
   });
 }
 
@@ -124,6 +134,17 @@ sub location {
   return $self->_loc_registry->{$name} || confess "no such location '$name'";
 }
 
+=method locations
+
+  my @loc = $hub->locations;
+
+=cut
+
+sub locations {
+  my ($self) = @_;
+  return values %{ $self->_loc_registry };
+}
+
 =method add_location
 
   my $loc = $hub->add_location(\%arg);
@@ -135,10 +156,33 @@ the given name.
 
 sub add_location {
   my ($self, $arg) = @_;
+
   my $loc = DNS::Oterica::Location->new({ %$arg, hub => $self });
 
   my $name = $loc->name;
   confess "tried to create $name twice" if $self->_loc_registry->{$name};
+
+  my $code = $loc->code;
+  my $net  = $loc->network;
+
+  my @errors;
+  for my $existing ($self->locations) {
+    if ($loc->code eq $existing->code) {
+      push @errors, sprintf "code '%s' conflicts with location %s",
+        $code, $existing->name;
+    }
+
+    next if $existing->name eq $self->always_location_name;
+
+    if ($net->overlaps($existing->network) == $Net::IP::IP_IDENTICAL) {
+      push @errors, sprintf "network '%s' conflicts with location %s (%s)",
+        $net->ip, $existing->name, $existing->network->ip;
+    }
+  }
+
+  if (@errors) {
+    confess("errors registering location $name: " . join q{; }, @errors);
+  }
 
   $self->_loc_registry->{$name} = $loc;
 }
