@@ -44,11 +44,8 @@ sub location {
   Carp::confess("location codes must be two-character")
     unless length $location->code == 2;
 
-  my @quads  = split /\./, $location->network->prefix;
-  my $hunks  = $location->network->prefixlen / 8;
-  my $prefix = join q{.}, splice(@quads, 0, $hunks);
-
-  my $str = sprintf "%%%s:%s\n", $location->code, $prefix;
+  my @prefixes = $location->_class_prefixes;
+  map { sprintf "%%%s:%s\n", $location->code, $_ } @prefixes;
 }
 
 sub __ip_locode_pairs {

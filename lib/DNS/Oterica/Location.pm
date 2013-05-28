@@ -50,6 +50,16 @@ sub BUILD {
   }
 }
 
+sub _class_prefixes {
+  my ($self) = @_;
+
+  my @quads  = split /\./, $self->network->prefix;
+  my $hunks  = $self->network->prefixlen / 8;
+  my $prefix = join q{.}, splice(@quads, 0, $hunks);
+
+  return $prefix;
+}
+
 sub as_data_lines {
   my ($self) = @_;
   $self->hub->rec->location($self);
