@@ -51,13 +51,20 @@ sub BUILD {
 }
 
 sub _class_prefixes {
-  my ($self) = @_;
+  my ($self, $ip) = @_; # $ip arg for testing
 
-  my @quads  = split /\./, $self->network->prefix;
-  my $hunks  = $self->network->prefixlen / 8;
-  my $prefix = join q{.}, splice(@quads, 0, $hunks);
+  $ip ||= $self->network;
+  my $pl    = $ip->prefixlen;
+  my $class = int( $pl / 8 );
+  my @quads = split /\./, $ip->ip;
+  my @keep  = splice @quads, 0, $class;
+  my $fixed = join q{.}, @keep;
+  my $bits  = 8 - ($pl - $class * 8);
 
-  return $prefix;
+  return $fixed if $bits == 8;
+
+  my @prefixes = map {; "$fixed.$_" } (0 .. (2**$bits - 1));
+  return @prefixes;
 }
 
 sub as_data_lines {
