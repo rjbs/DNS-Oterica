@@ -1,5 +1,5 @@
-package DNS::Oterica::Location;
-# ABSTRACT: a location at which hosts may reside
+package DNS::Oterica::Network;
+# ABSTRACT: a network to which results are served
 use Moose;
 
 use Net::IP;
@@ -16,26 +16,26 @@ coerce 'DNS::Oterica::Type::Network'
 
 =head1 OVERVIEW
 
-Locations are network locations where hosts may be found.  They represent
-unique IP ranges with unique names.
+Networks are IP networks to which results are served, and can be used to
+implement split horizons.
 
 Like other DNS::Oterica objects, they should be created through the hub.
 
 =attr name
 
-This is the location's unique name.
+This is the network's unique name.
 
 =cut
 
 has name => (is => 'ro', isa => 'Str', required => 1);
 
-=attr network
+=attr subnet
 
-This is the C<Net::IP> range for the network at this location.
+This is the C<Net::IP> range for the network at this network.
 
 =cut
 
-has 'network' => (
+has subnet => (
   is   => 'ro',
   isa  => 'DNS::Oterica::Type::Network',
   required => 1,
@@ -45,7 +45,7 @@ has 'network' => (
 sub _class_prefixes {
   my ($self, $ip) = @_; # $ip arg for testing
 
-  $ip ||= $self->network;
+  $ip ||= $self->subnet;
   my $pl    = $ip->prefixlen;
   my $class = int( $pl / 8 );
   my @quads = split /\./, $ip->ip;

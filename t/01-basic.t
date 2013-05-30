@@ -17,11 +17,11 @@ my $dnso = new_ok 'DNS::Oterica::App', [ {
   },
 } ];
 
-$dnso->populate_locations;
+$dnso->populate_networks;
 $dnso->populate_domains;
 $dnso->populate_hosts;
 
-my @locations = map { $_->as_data_lines } $dnso->hub->locations;
+my @networks = map { $_->as_data_lines } $dnso->hub->networks;
 my @nodes = map { $_->as_data_lines } $dnso->hub->nodes;
 my @node_families = map { $_->as_data_lines } $dnso->hub->node_families;
 
@@ -38,7 +38,7 @@ ok(exists $records->{$_}{'+'}, "$_ has a + record") for @hosts;
 ok(exists $records->{$_}{'Z'}, "$_ has a Z record") for @domains;
 
 is_deeply(
-  [ sort @locations ],
+  [ sort @networks ],
   [
     "%WW:\n",
     "%mc:10.1\n",

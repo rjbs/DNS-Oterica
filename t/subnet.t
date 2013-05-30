@@ -1,13 +1,13 @@
 #!perl
 use strict;
 use warnings;
-use DNS::Oterica::Location;
+use DNS::Oterica::Network;
 use Net::IP;
 use Test::More;
 
 sub prefixes {
   my ($ip) = @_;
-  DNS::Oterica::Location->_class_prefixes($ip);
+  DNS::Oterica::Network->_class_prefixes($ip);
 }
 
 {

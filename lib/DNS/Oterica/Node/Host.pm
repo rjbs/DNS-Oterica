@@ -6,8 +6,7 @@ extends 'DNS::Oterica::Node';
 =head1 OVERVIEW
 
 C<DNS::Oterica::Node::Host> represents an individual machine in DNS::Oterica.
-A node has interfaces (which have IP addresses), a network location, and is
-part of a named domain.
+A node has interfaces (which have IP addresses) and is part of a named domain.
 
 =attr hostname
 
@@ -37,7 +36,7 @@ has aliases  => (
 
 =attr interfaces
 
-This is an arrayref of pairs, each one an IP address and a location.
+This is an arrayref of pairs, each one an IP address and a network.
 
 This attribute is pretty likely to change later.
 
@@ -51,14 +50,6 @@ has interfaces => (
     interfaces => 'elements',
   },
 );
-
-=attr location
-
-The name of the network location of this host
-
-=cut
-
-has location => (is => 'ro', isa => 'Str', required => 1);
 
 =attr ttl
 

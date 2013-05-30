@@ -6,7 +6,7 @@ with 'DNS::Oterica::Role::RecordMaker';
 
 # use MooseX::AttributeHelpers;
 
-use DNS::Oterica::Location;
+use DNS::Oterica::Network;
 use DNS::Oterica::Node;
 use DNS::Oterica::Node::Domain;
 use DNS::Oterica::Node::Host;
@@ -20,7 +20,7 @@ keeping data synchronized.
 
 =cut
 
-has [ qw(_domain_registry _loc_registry _node_family_registry) ] => (
+has [ qw(_domain_registry _net_registry _node_family_registry) ] => (
   is  => 'ro',
   isa => 'HashRef',
   init_arg => undef,
@@ -63,8 +63,8 @@ use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;
 
-has world_location_name  => (is => 'ro', isa => 'Str', default => 'world');
-has always_location_name => (is => 'ro', isa => 'Str', default => 'always');
+has world_network_name  => (is => 'ro', isa => 'Str', default => 'world');
+has always_network_name => (is => 'ro', isa => 'Str', default => 'always');
 
 sub BUILD {
   my ($self) = @_;
@@ -76,16 +76,16 @@ sub BUILD {
         = $plugin->new({ hub => $self });
   }
 
-  $self->add_location({
-    name => $self->world_location_name,
+  $self->add_network({
+    name => $self->world_network_name,
     code => 'WW', # should it be configurable?  eh.
-    network => '0.0.0.0/0',
+    subnet => '0.0.0.0/0',
   });
 
-  $self->add_location({
-    name => $self->always_location_name,
+  $self->add_network({
+    name => $self->always_network_name,
     code => '',
-    network => '0.0.0.0/32',
+    subnet => '0.0.0.0/32',
   });
 }
 
@@ -120,71 +120,71 @@ sub domain {
   });
 }
 
-=method location
+=method network
 
-  my $loc = $hub->location($name);
+  my $net = $hub->network($name);
 
-This method finds the named location and returns it.  If no location for the
+This method finds the named network and returns it.  If no network for the
 given name is registered, an exception is raised.
 
 =cut
 
-sub location {
+sub network {
   my ($self, $name) = @_;
-  return $self->_loc_registry->{$name} || confess "no such location '$name'";
+  return $self->_net_registry->{$name} || confess "no such network '$name'";
 }
 
-=method locations
+=method networks
 
-  my @loc = $hub->locations;
+  my @net = $hub->networks;
 
 =cut
 
-sub locations {
+sub networks {
   my ($self) = @_;
-  return values %{ $self->_loc_registry };
+  return values %{ $self->_net_registry };
 }
 
-=method add_location
+=method add_network
 
-  my $loc = $hub->add_location(\%arg);
+  my $net = $hub->add_network(\%arg);
 
-This registers a new location, raising an exception if one already exists for
+This registers a new network, raising an exception if one already exists for
 the given name.
 
 =cut
 
-sub add_location {
+sub add_network {
   my ($self, $arg) = @_;
 
-  my $loc = DNS::Oterica::Location->new({ %$arg, hub => $self });
+  my $net = DNS::Oterica::Network->new({ %$arg, hub => $self });
 
-  my $name = $loc->name;
-  confess "tried to create $name twice" if $self->_loc_registry->{$name};
+  my $name = $net->name;
+  confess "tried to create $name twice" if $self->_net_registry->{$name};
 
-  my $code = $loc->code;
-  my $net  = $loc->network;
+  my $code = $net->code;
+  my $ip   = $net->subnet;
 
   my @errors;
-  for my $existing ($self->locations) {
-    if ($loc->code eq $existing->code) {
-      push @errors, sprintf "code '%s' conflicts with location %s",
+  for my $existing ($self->networks) {
+    if ($net->code eq $existing->code) {
+      push @errors, sprintf "code '%s' conflicts with network %s",
         $code, $existing->name;
     }
 
-    next if $existing->name eq $self->always_location_name;
+    next if $existing->name eq $self->always_network_name;
 
-    if ($net->overlaps($existing->network) == $Net::IP::IP_IDENTICAL) {
-      push @errors, sprintf "network '%s' conflicts with location %s (%s)",
-        $net->ip, $existing->name, $existing->network->ip;
+    if ($ip->overlaps($existing->subnet) == $Net::IP::IP_IDENTICAL) {
+      push @errors, sprintf "network '%s' conflicts with network %s (%s)",
+        $ip->ip, $existing->name, $existing->subnet->ip;
     }
   }
 
   if (@errors) {
-    confess("errors registering location $name: " . join q{; }, @errors);
+    confess("errors registering network $name: " . join q{; }, @errors);
   }
 
-  $self->_loc_registry->{$name} = $loc;
+  $self->_net_registry->{$name} = $net;
 }
 
 =method host

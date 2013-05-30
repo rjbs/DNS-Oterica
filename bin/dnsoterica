@@ -27,13 +27,13 @@ my $app = DNS::Oterica::App->new(
   hub_args      => $opts,
 );
 
-$app->populate_locations;
+$app->populate_networks;
 $app->populate_domains;
 $app->populate_hosts;
 
 my @nodes = sort { $a->fqdn cmp $b->fqdn } $app->hub->nodes;
 
-print sort map {; $_->as_data_lines } $app->hub->locations;
+print sort map {; $_->as_data_lines } $app->hub->networks;
 print "\n";
 print $_->as_data_lines for @nodes;
 print "\n";

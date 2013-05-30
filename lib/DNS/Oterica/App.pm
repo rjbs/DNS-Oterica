@@ -45,13 +45,13 @@ has root => (
   required => 1,
 );
 
-sub populate_locations {
+sub populate_networks {
   my ($self) = @_;
 
   my $root = $self->root;
-  for my $file (File::Find::Rule->file->in("$root/locations")) {
+  for my $file (File::Find::Rule->file->in("$root/networks")) {
     for my $data (YAML::XS::LoadFile($file)) {
-      $self->hub->add_location($data);
+      $self->hub->add_network($data);
     }
   }
 }
@@ -81,19 +81,17 @@ sub populate_hosts {
 
   for my $file (File::Find::Rule->file->in("$root/hosts")) {
     for my $data (YAML::XS::LoadFile($file)) {
-      my $location = $hub->location($data->{location});
-
       my $interfaces;
       if (ref $data->{ip}) {
         $interfaces = [
           map {;
             [
-            $data->{ip}{$_} => $hub->location($_) ]
+            $data->{ip}{$_} => $hub->network($_) ]
           } keys %{ $data->{ip}}
         ];
       } else {
         $interfaces = [
-          [ $data->{ip} => $hub->location( $hub->world_location_name ) ]
+          [ $data->{ip} => $hub->network( $hub->world_network_name ) ]
         ];
       }
 
@@ -102,7 +100,6 @@ sub populate_hosts {
         $data->{hostname},
         {
           interfaces => $interfaces,
-          location   => $data->{location},
           aliases    => $data->{aliases} || [],
           (exists $data->{ttl} ? (ttl => $data->{ttl}) : ()),
         },

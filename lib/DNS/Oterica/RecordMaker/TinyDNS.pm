@@ -163,10 +163,6 @@ sub a {
   my ($self, $rec) = @_;
   my @lines = $self->_generic(q{+}, $rec);
 
-  # if  $rec->{node}->hub->location($rec->{node}->location)->delegated) {
-  #   push @lines, $self->ptr($rec);
-  # }
-
   return @lines;
 }
 
