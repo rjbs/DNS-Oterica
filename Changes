@@ -8,6 +8,9 @@ Revision history for {{$dist->name}}
           a host node can have multiple interfaces, across multiple networks,
           which will result in a split horizon
 
+          the "world" location is now the "FALLBACK" network, the "ALL" network
+          performs a similar role
+
 0.100001  2011-03-01 13:09:07 America/New_York
 
           first revision with a changelog
