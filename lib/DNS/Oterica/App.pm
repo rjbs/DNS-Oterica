@@ -91,7 +91,7 @@ sub populate_hosts {
         ];
       } else {
         $interfaces = [
-          [ $data->{ip} => $hub->network( $hub->world_network_name ) ]
+          [ $data->{ip} => $hub->network( $hub->all_network_name ) ]
         ];
       }
 

@@ -2,6 +2,6 @@ hostname: indigo
 domain: example.com
 location: microport
 ip:
-  world: 10.2.0.200
+  FALLBACK: 10.2.0.200
 families:
   - com.example.mx

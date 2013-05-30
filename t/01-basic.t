@@ -40,7 +40,7 @@ ok(exists $records->{$_}{'Z'}, "$_ has a Z record") for @domains;
 is_deeply(
   [ sort @networks ],
   [
-    "%WW:\n",
+    "%FB:\n",
     "%mc:10.1\n",
     "%mp:10.2.0\n",
   ],
@@ -49,7 +49,7 @@ is_deeply(
 
 subtest "per-location IPs" => sub {
   my @azure_lines  = grep {; /\A\+azure/ } @nodes;
-  my @world_lines  = grep {; /:WW$/ } @azure_lines;
+  my @world_lines  = grep {; /:FB$/ } @azure_lines;
   my @micro_lines  = grep {; /:mp$/ } @azure_lines;
   my @always_lines = grep {; /:$/   } @azure_lines;
 

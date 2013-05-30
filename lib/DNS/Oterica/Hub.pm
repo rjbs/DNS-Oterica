@@ -63,8 +63,8 @@ use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
   require     => 1;
 
-has world_network_name  => (is => 'ro', isa => 'Str', default => 'world');
-has always_network_name => (is => 'ro', isa => 'Str', default => 'always');
+has fallback_network_name => (is => 'ro', isa => 'Str', default => 'FALLBACK');
+has all_network_name   => (is => 'ro', isa => 'Str', default => 'ALL');
 
 sub BUILD {
   my ($self) = @_;
@@ -77,13 +77,13 @@ sub BUILD {
   }
 
   $self->add_network({
-    name => $self->world_network_name,
-    code => 'WW', # should it be configurable?  eh.
+    name => $self->fallback_network_name,
+    code => 'FB', # should it be configurable?  eh.
     subnet => '0.0.0.0/0',
   });
 
   $self->add_network({
-    name => $self->always_network_name,
+    name => $self->all_network_name,
     code => '',
     subnet => '0.0.0.0/32',
   });
@@ -172,7 +172,7 @@ sub add_network {
         $code, $existing->name;
     }
 
-    next if $existing->name eq $self->always_network_name;
+    next if $existing->name eq $self->all_network_name;
 
     if ($ip->overlaps($existing->subnet) == $Net::IP::IP_IDENTICAL) {
       push @errors, sprintf "network '%s' conflicts with network %s (%s)",

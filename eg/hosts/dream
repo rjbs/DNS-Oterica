@@ -2,7 +2,7 @@ hostname: dream
 domain: example.com
 location: megacenter
 ip:
-  world: 10.1.0.200
+  ALL: 10.1.0.200
 families:
   - com.example.postlink
   - com.example.archiver

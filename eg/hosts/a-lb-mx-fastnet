@@ -1,8 +1,7 @@
 hostname: a-lb-mx-fastnet
 domain: example.com
 location: megacenter
-ip:
-  world: 10.1.0.100
+ip: 10.1.0.100
 aliases:
   - almf.example.com
 families:
