@@ -100,6 +100,7 @@ sub populate_hosts {
         $data->{hostname},
         {
           interfaces => $interfaces,
+          location   => $data->{location},
           aliases    => $data->{aliases} || [],
           (exists $data->{ttl} ? (ttl => $data->{ttl}) : ()),
         },

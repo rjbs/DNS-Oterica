@@ -51,6 +51,14 @@ has interfaces => (
   },
 );
 
+=attr location
+
+The name of the network location of this host
+
+=cut
+
+has location => (is => 'ro', isa => 'Str', required => 1);
+
 =attr ttl
 
 This is the default TTL for the host's A records -- it doesn't affect the TTL
