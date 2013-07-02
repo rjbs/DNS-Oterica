@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.201     2013-07-01 22:27:24 America/New_York
+          update bug tracker
+
 0.200     2013-05-30 14:50:07 America/New_York
           [ WILL TOTALLY BREAK YOUR SETUP! ]
 
