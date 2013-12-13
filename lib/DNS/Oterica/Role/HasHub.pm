@@ -1,5 +1,6 @@
 package DNS::Oterica::Role::HasHub;
 use Moose::Role;
+# ABSTRACT: any part of the dnso system that has a reference to the hub
 
 use namespace::autoclean;
 
