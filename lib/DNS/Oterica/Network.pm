@@ -1,5 +1,6 @@
 package DNS::Oterica::Network;
 # ABSTRACT: a network to which results are served
+
 use Moose;
 
 use Net::IP;

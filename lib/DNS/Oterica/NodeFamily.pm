@@ -1,5 +1,6 @@
 package DNS::Oterica::NodeFamily;
 # ABSTRACT: a group of hosts that share common functions
+
 use Moose;
 
 =attr nodes

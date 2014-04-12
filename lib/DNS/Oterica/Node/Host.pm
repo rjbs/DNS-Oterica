@@ -1,5 +1,6 @@
 package DNS::Oterica::Node::Host;
 # ABSTRACT: a host node
+
 use Moose;
 extends 'DNS::Oterica::Node';
 
