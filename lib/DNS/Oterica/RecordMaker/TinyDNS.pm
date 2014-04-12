@@ -109,7 +109,9 @@ sub ptr {
     for my $if ($self->__ip_locode_pairs($rec)) {
       my $ip = $if->[0];
       my @bytes = reverse split /\./, $ip;
-      splice @bytes, 1, 1, '0-24', $bytes[1];
+
+      splice @bytes, 1, 1, '0-24', $bytes[1] unless $bytes[-1] eq '10';
+
       my $extended_arpa = join '.', @bytes, 'in-addr', 'arpa';
       push @lines, sprintf "^%s:%s:%s:%s:%s\n",
         $extended_arpa,

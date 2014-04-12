@@ -63,4 +63,13 @@ subtest "per-location IPs" => sub {
   like($always_lines[0], qr/10\.99\.88\.77/, "the omnipresent is 10.99.88.77");
 };
 
+subtest "stupid cidr rdns hack" => sub {
+  my @ptr_lines = grep {; /\A\^/ } @nodes;
+
+  ok(
+    ! (grep { /0-24/ } @ptr_lines),
+    "no 0-24 delegation on 10.* addrs",
+  );
+};
+
 done_testing;
