@@ -118,7 +118,7 @@ sub ptr {
         $rec->{name},
         $rec->{ttl} || $self->_default_ttl,
         $self->_serial_number,
-        $if->[1];
+        $if->[1] eq 'FB' ? '' : $if->[1];
     }
     return @lines;
 }
