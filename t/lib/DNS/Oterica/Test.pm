@@ -20,6 +20,7 @@ my %collect_dispatch = (
   '%' => \&collect_percent,
   '.' => \&collect_period,
   '^' => \&collect_ptr,
+  "'" => \&collect_tick,
 );
 
 sub collect_dnso_nodes {
@@ -96,6 +97,11 @@ sub collect_ptr {
   my @bytes = split /\./, $parts[1];
   my $reverse = join '.', reverse(@bytes), 'in-addr', 'arpa';
   push @{$records->{$parts[0]}{'^'}}, $parts[1] ;
+}
+
+sub collect_tick {
+  my @parts = @_;
+  push @{$records->{$parts[0]}{"'"}}, $parts[1];
 }
 
 1;
