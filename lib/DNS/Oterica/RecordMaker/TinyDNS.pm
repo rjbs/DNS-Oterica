@@ -181,7 +181,7 @@ sub mx {
   for my $if ($self->__ip_locode_pairs($rec)) {
     push @lines, sprintf "@%s:%s:%s:%s:%s:%s:%s\n",
       $rec->{name},
-      $if->[0],
+      ($rec->{no_ip} ? '' : $if->[0]),
       $mx_name,
       $rec->{dist} || 10,
       $rec->{ttl} || $self->_default_ttl,
