@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
         - make it possible to emit MX records without an IP (no_ip => 1)
         - change the way that fallback/other network PTRs are generated
         - update test utilities to deal with ' lines (TXT records) in tinydns
+        - allow "name" argument to "txt" record in TinyDNS to avoid needing a
+          node
 
 0.202     2013-12-13 08:22:25 America/New_York
           update repo and bugtracker

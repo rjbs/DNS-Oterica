@@ -253,9 +253,15 @@ sub txt {
   my ($self, $rec) = @_;
   my @lines;
 
+  my $name = $rec->{name};
+  $name = $rec->{node}->fqdn if ! $name && $rec->{node};
+
+  Carp::confess("no record name or node given for txt record")
+    unless defined $name and length $name;
+
   # 'fqdn:s:ttl:timestamp:lo
   push @lines, sprintf qq{'%s:%s:%s:%s:%s\n},
-    $rec->{node}->fqdn,
+    $name,
     $rec->{text},
     $rec->{ttl} || $self->_default_ttl,
     $self->_serial_number,
