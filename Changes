@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.203     2014-09-05 15:34:10-04:00 America/New_York
         - make it possible to emit MX records without an IP (no_ip => 1)
         - change the way that fallback/other network PTRs are generated
         - update test utilities to deal with ' lines (TXT records) in tinydns
