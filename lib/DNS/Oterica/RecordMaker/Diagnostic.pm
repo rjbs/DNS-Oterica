@@ -25,6 +25,7 @@ my @types = qw(
   soa_and_ns
   cname
   txt
+  srv
 );
 
 for my $type (@types) {

@@ -72,4 +72,25 @@ subtest "stupid cidr rdns hack" => sub {
   );
 };
 
+subtest "tinydns checks" => sub {
+  my @lines = DNS::Oterica::RecordMaker::TinyDNS->srv({
+    service   => 'imaps',
+    protocol  => '993',
+    domain    => 'example.com',
+    priority  => 12,
+    weight    => 60000,
+    target    => 'imap.example.com',
+    port      => 993,
+    location  => 'lo',
+  });
+
+  is(@lines, 1, "we get one SRV record");
+  is(
+    $lines[0],
+    ':_imaps._993.example.com:33:\000\014\352\140\003\341\004imap\007example\003com\000:1800:lo' . "\n",
+    "...and it is just what we expect",
+  );
+};
+
+
 done_testing;

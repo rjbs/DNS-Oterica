@@ -271,4 +271,73 @@ sub txt {
   return @lines;
 }
 
+sub _escaped_octals {
+  join q{}, map {; sprintf '\\%03o', ord } split //, pack 'n', $_[0];
+}
+
+sub _hostname_to_labels {
+  my @labels = split /\./, $_[0];
+  my $str = '';
+  $str .= sprintf('\\%03o', length) . $_ for @labels;
+  $str .= '\000';
+
+  return $str;
+}
+
+=method srv
+
+  @lines = $rec->srv({
+    # We want to produce _finger._tcp.example.com for port 70
+    domain    => 'example.com',
+    service   => 'finger',
+    protocol  => 'tcp',
+    target    => 'f.example.com',
+    port      => 70,
+
+    priority  => 10,
+    weight    => 20,
+  });
+
+This returns lines for SRV records following RFC 2782.  It takes the following
+arguments:
+
+  domain    - the domain offering service
+  service   - the well-known service name (http, imaps, finger)
+  protocol  - tcp or udp
+
+  target    - the host providing service
+  port      - the port the service listens on
+
+  priority  - numeric priority; lower numbers should be used first
+  weight    - weight to break priority ties; higher numbers preferred
+
+=cut
+
+sub srv {
+  my ($self, $rec) = @_;
+
+  Carp::confess("srv record with no target! use empty string for null target")
+    unless defined $rec->{location};
+
+  Carp::confess("srv record with no port!")
+    unless defined $rec->{port};
+
+  my $priority = $rec->{priority} || 0;
+  my $weight   = $rec->{weight}   || 0;
+
+  my @lines;
+  push @lines, sprintf ":_%s._%s.%s:33:%s%s%s%s:%s:%s\n",
+    $rec->{service},
+    $rec->{protocol} || 'tcp',
+    $rec->{domain},
+    _escaped_octals($priority),
+    _escaped_octals($weight),
+    _escaped_octals($rec->{port}),
+    _hostname_to_labels($rec->{target}),
+    $rec->{ttl} || $self->_default_ttl,
+    $rec->{location} || '';
+
+  return @lines;
+}
+
 1;
