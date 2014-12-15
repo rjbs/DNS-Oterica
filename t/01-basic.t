@@ -90,6 +90,23 @@ subtest "tinydns checks" => sub {
     ':_imaps._993.example.com:33:\000\014\352\140\003\341\004imap\007example\003com\000:1800:lo' . "\n",
     "...and it is just what we expect",
   );
+
+  my $ok = eval {
+    DNS::Oterica::RecordMaker::TinyDNS->srv({
+      service   => 'imaps',
+      protocol  => '993',
+      domain    => 'example.com',
+      priority  => 12,
+      weight    => 60000,
+      # target    => 'imap.example.com',
+      port      => 993,
+      location  => 'lo',
+    });
+  };
+
+  my $error = $@;
+  ok(! $ok, "can't make a record without a target");
+  like($error, qr/no target/, "...error says so");
 };
 
 

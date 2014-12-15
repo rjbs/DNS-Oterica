@@ -317,10 +317,12 @@ sub srv {
   my ($self, $rec) = @_;
 
   Carp::confess("srv record with no target! use empty string for null target")
-    unless defined $rec->{location};
+    unless defined $rec->{target};
 
-  Carp::confess("srv record with no port!")
-    unless defined $rec->{port};
+  for my $needed (qw(port service domain)) {
+    Carp::confess("tried to make srv record with no $needed!")
+      unless defined $rec->{$needed};
+  }
 
   my $priority = $rec->{priority} || 0;
   my $weight   = $rec->{weight}   || 0;
