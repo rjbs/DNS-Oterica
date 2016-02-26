@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - further special-case our stupid internal special-case 0-24 code
 
 0.205     2014-12-15 09:37:04-05:00 America/New_York
         - fix broken validation of SRV records with no target

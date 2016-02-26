@@ -105,22 +105,24 @@ Generate an C<^> line, for the reverse DNS of an IP address.
 sub ptr {
   my ($self, $rec) = @_;
 
-    my @lines;
-    for my $if ($self->__ip_locode_pairs($rec)) {
-      my $ip = $if->[0];
-      my @bytes = reverse split /\./, $ip;
+  my @lines;
+  for my $if ($self->__ip_locode_pairs($rec)) {
+    my $ip = $if->[0];
+    my @bytes = reverse split /\./, $ip;
 
-      splice @bytes, 1, 1, '0-24', $bytes[1] unless $bytes[-1] eq '10';
+    splice @bytes, 1, 1, '0-24', $bytes[1]
+      if $bytes[1] eq 237 && $bytes[2] eq 72 && $bytes[3] eq 208;
 
-      my $extended_arpa = join '.', @bytes, 'in-addr', 'arpa';
-      push @lines, sprintf "^%s:%s:%s:%s:%s\n",
-        $extended_arpa,
-        $rec->{name},
-        $rec->{ttl} || $self->_default_ttl,
-        $self->_serial_number,
-        $if->[1] eq 'FB' ? '' : $if->[1];
-    }
-    return @lines;
+    my $extended_arpa = join '.', @bytes, 'in-addr', 'arpa';
+    push @lines, sprintf "^%s:%s:%s:%s:%s\n",
+      $extended_arpa,
+      $rec->{name},
+      $rec->{ttl} || $self->_default_ttl,
+      $self->_serial_number,
+      $if->[1] eq 'FB' ? '' : $if->[1];
+  }
+
+  return @lines;
 }
 
 # TODO find out why we generate Z and & records for our IPs and refactor this
