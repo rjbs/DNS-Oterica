@@ -1,4 +1,5 @@
 ---
 name: microport
 code: mp
-subnet: 10.2.0.0/24
+subnets:
+- 10.2.0.0/24

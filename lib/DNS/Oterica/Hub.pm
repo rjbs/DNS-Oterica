@@ -79,13 +79,13 @@ sub BUILD {
   $self->add_network({
     name => $self->fallback_network_name,
     code => 'FB', # should it be configurable?  eh.
-    subnet => '0.0.0.0/0',
+    subnets => [ '0.0.0.0/0' ],
   });
 
   $self->add_network({
     name => $self->all_network_name,
     code => '',
-    subnet => '0.0.0.0/32',
+    subnets => [ '0.0.0.0/32' ],
   });
 }
 
@@ -163,7 +163,6 @@ sub add_network {
   confess "tried to create $name twice" if $self->_net_registry->{$name};
 
   my $code = $net->code;
-  my $ip   = $net->subnet;
 
   my @errors;
   for my $existing ($self->networks) {
@@ -174,9 +173,13 @@ sub add_network {
 
     next if $existing->name eq $self->all_network_name;
 
-    if ($ip->overlaps($existing->subnet) == $Net::IP::IP_IDENTICAL) {
-      push @errors, sprintf "network '%s' conflicts with network %s (%s)",
-        $ip->ip, $existing->name, $existing->subnet->ip;
+    for my $our ($net->subnets) {
+      for my $their ($existing->subnets) {
+        if ($our->overlaps($their) == $Net::IP::IP_IDENTICAL) {
+          push @errors, sprintf "network '%s' conflicts with network %s (%s)",
+            $our->ip, $existing->name, $their->ip;
+        }
+      }
     }
   }
 

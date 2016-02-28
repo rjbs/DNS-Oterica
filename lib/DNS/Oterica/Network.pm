@@ -15,6 +15,14 @@ coerce 'DNS::Oterica::Type::Network'
   => from 'Str'
   => via { Net::IP->new($_) || confess( Net::IP::Error() ) };
 
+subtype 'DNS::Oterica::Type::Networks'
+  => as ArrayRef
+  => where { @$_ == grep {; $_->isa('Net::IP') } @$_ };
+
+coerce 'DNS::Oterica::Type::Networks'
+  => from 'ArrayRef'
+  => via { [ map {; Net::IP->new($_) || confess( Net::IP::Error() ) } @$_ ] };
+
 =head1 OVERVIEW
 
 Networks are IP networks to which results are served, and can be used to
@@ -30,33 +38,39 @@ This is the network's unique name.
 
 has name => (is => 'ro', isa => 'Str', required => 1);
 
-=attr subnet
+=attr subnets
 
-This is the C<Net::IP> range for the network at this network.
+This is the C<Net::IP> ranges for the network at this network.
 
 =cut
 
-has subnet => (
-  is   => 'ro',
-  isa  => 'DNS::Oterica::Type::Network',
+has subnets => (
+  isa  => 'DNS::Oterica::Type::Networks',
+  traits   => [ 'Array' ],
+  handles  => { subnets => 'elements' },
   required => 1,
   coerce   => 1,
 );
 
 sub _class_prefixes {
-  my ($self, $ip) = @_; # $ip arg for testing
+  my ($self, @ips) = @_; # $ip arg for testing
 
-  $ip ||= $self->subnet;
-  my $pl    = $ip->prefixlen;
-  my $class = int( $pl / 8 );
-  my @quads = split /\./, $ip->ip;
-  my @keep  = splice @quads, 0, $class;
-  my $fixed = join q{.}, @keep;
-  my $bits  = 8 - ($pl - $class * 8);
+  @ips = $self->subnets unless @ips;
 
-  return $fixed if $bits == 8;
+  my @prefixes;
 
-  my @prefixes = map {; "$fixed.$_" } (0 .. (2**$bits - 1));
+  for my $ip (@ips) {
+    my $pl    = $ip->prefixlen;
+    my $class = int( $pl / 8 );
+    my @quads = split /\./, $ip->ip;
+    my @keep  = splice @quads, 0, $class;
+    my $fixed = join q{.}, @keep;
+    my $bits  = 8 - ($pl - $class * 8);
+
+    return $fixed if $bits == 8;
+    push @prefixes, map {; "$fixed.$_" } (0 .. (2**$bits - 1));
+  }
+
   return @prefixes;
 }
 

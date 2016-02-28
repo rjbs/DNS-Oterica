@@ -1,4 +1,5 @@
 ---
 name: megacenter
 code: mc
-subnet: 10.1.0.0/16
+subnets:
+- 10.1.0.0/16
