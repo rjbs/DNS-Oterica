@@ -4,6 +4,20 @@ use warnings;
 use Test::More;
 use lib 't/lib';
 
+BEGIN {
+  $ENV{DNSO_TESTING_PLUGINS} = join q{,}, qw(
+    DNS::Oterica::NodeFamily::ExampleAliasDomain
+    DNS::Oterica::NodeFamily::ExampleArchiver
+    DNS::Oterica::NodeFamily::ExampleDomain
+    DNS::Oterica::NodeFamily::ExampleMX
+    DNS::Oterica::NodeFamily::ExampleNS
+    DNS::Oterica::NodeFamily::ExampleVDom
+    DNS::Oterica::NodeFamily::ExampleWWW
+    DNS::Oterica::NodeFamily::Jeeves
+    DNS::Oterica::NodeFamily::PostLink
+  );
+}
+
 use DNS::Oterica;
 use DNS::Oterica::App;
 use DNS::Oterica::Test;

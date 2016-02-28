@@ -61,7 +61,10 @@ sub soa_rname {
 
 use Module::Pluggable
   search_path => [ qw(DNS::Oterica::NodeFamily) ],
-  require     => 1;
+  require     => 1,
+  $ENV{DNSO_TESTING_PLUGINS}
+    ? (only => [ split /,/, $ENV{DNSO_TESTING_PLUGINS} ])
+    : ();
 
 has fallback_network_name => (is => 'ro', isa => 'Str', default => 'FALLBACK');
 has all_network_name   => (is => 'ro', isa => 'Str', default => 'ALL');
