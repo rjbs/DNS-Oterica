@@ -17,7 +17,7 @@ coerce 'DNS::Oterica::Type::Network'
 
 subtype 'DNS::Oterica::Type::Networks'
   => as ArrayRef
-  => where { @$_ == grep {; $_->isa('Net::IP') } @$_ };
+  => where { @$_ == grep {; ref $_ and $_->isa('Net::IP') } @$_ };
 
 coerce 'DNS::Oterica::Type::Networks'
   => from 'ArrayRef'
