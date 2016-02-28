@@ -67,8 +67,11 @@ sub _class_prefixes {
     my $fixed = join q{.}, @keep;
     my $bits  = 8 - ($pl - $class * 8);
 
-    return $fixed if $bits == 8;
-    push @prefixes, map {; "$fixed.$_" } (0 .. (2**$bits - 1));
+    if ($bits == 8) {
+      push @prefixes, $fixed;
+    } else {
+      push @prefixes, map {; "$fixed.$_" } (0 .. (2**$bits - 1));
+    }
   }
 
   return @prefixes;
