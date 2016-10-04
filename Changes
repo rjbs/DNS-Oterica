@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
         - BREAKING CHANGE: networks now have "subnets" rather than one subnet
+        - BREAKING CHANGE: txt records now octal-escape possible special
+          characters;  if you were already doing that, it will be
+          double-encoded now
+        - added ->dkim to recordmaker
         - further special-case our stupid internal special-case 0-24 code
 
 0.205     2014-12-15 09:37:04-05:00 America/New_York
