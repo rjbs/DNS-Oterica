@@ -264,13 +264,19 @@ sub txt {
   # 'fqdn:s:ttl:timestamp:lo
   push @lines, sprintf qq{'%s:%s:%s:%s:%s\n},
     $name,
-    $rec->{text},
+    _colon_safe($rec->{text}),
     $rec->{ttl} || $self->_default_ttl,
     $self->_serial_number,
     '',
   ;
 
   return @lines;
+}
+
+sub _colon_safe {
+  my $str = $_[0];
+  $str =~ s/([^A-Za-z0-9=])/sprintf '\\%03o', ord $1/ge;
+  $str;
 }
 
 sub _escaped_octals {
