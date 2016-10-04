@@ -2,6 +2,9 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.303     2016-10-04 16:46:56-04:00 America/New_York
+        - TinyDNS DKIM lines were not newline terminated; this has been fixed
+
 0.206     2016-10-04 16:06:59-04:00 America/New_York
         - BREAKING CHANGE: networks now have "subnets" rather than one subnet
         - BREAKING CHANGE: txt records now octal-escape possible special
