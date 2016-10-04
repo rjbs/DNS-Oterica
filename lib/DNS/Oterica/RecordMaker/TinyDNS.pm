@@ -307,7 +307,7 @@ sub _hostname_to_labels {
   });
 
 This returns lines for SRV records following RFC 2782.  It takes the following
-arguments:
+special arguments:
 
   domain    - the domain offering service
   service   - the well-known service name (http, imaps, finger)
