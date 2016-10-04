@@ -26,6 +26,7 @@ my @types = qw(
   cname
   txt
   srv
+  dkim
 );
 
 for my $type (@types) {

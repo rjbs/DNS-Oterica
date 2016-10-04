@@ -350,4 +350,37 @@ sub srv {
   return @lines;
 }
 
+=method dkim
+
+This returns lines for TXT records for DKIM keys.  It takes the following
+arguments:
+
+  domain   - the domain
+  selector - the key selector
+
+  ttl      - record time to live
+
+  tags     - the DKIM record tags, a hashref
+
+Any tag given in the hashref will be included.  C<p> is required.
+
+=cut
+
+sub dkim {
+  my ($self, $rec) = @_;
+
+  Carp::confess("no domain for DKIM record")     unless $rec->{domain};
+  Carp::confess("no selector for DKIM record")   unless $rec->{selector};
+  Carp::confess("no public key for DKIM record") unless $rec->{tags}{p};
+
+  my $tags = $rec->{tags};
+  my $txt = join q{; }, map {; "$_=$tags->{$_}" } sort keys %$tags;
+
+  return $self->txt({
+    name => "$rec->{selector}._domainkey.$rec->{domain}",
+    text => $txt,
+    ttl  => $rec->{ttl} || $self->_default_ttl,
+  })
+}
+
 1;
