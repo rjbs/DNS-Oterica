@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - DKIM version tag now always come first
 
 0.303     2016-10-04 16:46:56-04:00 America/New_York
         - TinyDNS DKIM lines were not newline terminated; this has been fixed
