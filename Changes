@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.304     2016-10-10 16:27:44-04:00 America/New_York
         - DKIM version tag now always come first
 
 0.303     2016-10-04 16:46:56-04:00 America/New_York
