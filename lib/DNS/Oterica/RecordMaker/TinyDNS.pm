@@ -12,10 +12,6 @@ to consume.
 
 sub _default_ttl { 1800 }
 
-sub _serial_number {
-  return($ENV{DNS_OTERICA_SN} || $^T)
-}
-
 =method comment
 
   my $line = $rec->comment("Hello, world!");
@@ -68,7 +64,7 @@ sub _generic {
       $rec->{name},
       $if->[0],
       $rec->{ttl} || $self->_default_ttl,
-      $self->_serial_number,
+      '', #$self->_serial_number,
       $if->[1],
     ;
   }
@@ -118,13 +114,15 @@ sub ptr {
       $extended_arpa,
       $rec->{name},
       $rec->{ttl} || $self->_default_ttl,
-      $self->_serial_number,
+      '', #$self->_serial_number,
       $if->[1] eq 'FB' ? '' : $if->[1];
   }
 
   return @lines;
 }
 
+# Zfqdn:mname:rname:ser:ref:ret:exp:min:ttl:timestamp:lo
+#
 # TODO find out why we generate Z and & records for our IPs and refactor this
 # to not duplicate effort with &ptr and the like. problem is that &a calls &ptr
 # so having the code there means it gets called for every time we generate a +
@@ -148,7 +146,7 @@ sub soa_and_ns_for_ip {
     $ns_1,
     $addr,
     $self->_default_ttl,
-    $self->_serial_number,
+    '', #$self->_timestamp,
     '',
   ;
 
@@ -187,7 +185,7 @@ sub mx {
       $mx_name,
       $rec->{dist} || 10,
       $rec->{ttl} || $self->_default_ttl,
-      $self->_serial_number,
+      '', #$self->_serial_number,
       $if->[1],
     ;
   }
@@ -209,7 +207,7 @@ sub domain {
     $rec->{ip} || '',
     $rec->{ns},
     $rec->{ttl} || $self->_default_ttl,
-    $self->_serial_number,
+    '', #$self->_serial_number,
     '',
   ;
 
@@ -226,7 +224,7 @@ sub soa_and_ns {
     $rec->{ns} || '',
     $rec->{node}->hub->soa_rname,
     $rec->{ttl} || $self->_default_ttl,
-    $self->_serial_number,
+    '', #$self->_serial_number,
     '',
   ;
 
@@ -244,7 +242,7 @@ sub cname {
     $rec->{cname},
     $rec->{domain} || '',
     $rec->{ttl} || $self->_default_ttl,
-    $self->_serial_number,
+    '', #$self->_serial_number,
     '',
   ;
 
@@ -266,7 +264,7 @@ sub txt {
     $name,
     _colon_safe($rec->{text}),
     $rec->{ttl} || $self->_default_ttl,
-    $self->_serial_number,
+    '', #$self->_serial_number,
     '',
   ;
 

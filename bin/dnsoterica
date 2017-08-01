@@ -1,7 +1,6 @@
 #!/icg/bin/perl
 # ABSTRACT: run dns-o!
-package
-  dnsoterica;
+package dnsoterica;
 use strict;
 use warnings;
 use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
