@@ -1,6 +1,11 @@
 #!/icg/bin/perl
 # ABSTRACT: run dns-o!
-package dnsoterica;
+
+# This goofy linebreak prevents PAUSE from indexing this package.  The
+        # package statement is here to help Pod::Weaver. -- rjbs, 2017-08-02
+package
+  dnsoterica;
+
 use strict;
 use warnings;
 use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
