@@ -43,25 +43,13 @@ DNS::Oterica::Test->collect_dnso_nodes(@nodes);
 DNS::Oterica::Test->collect_dnso_node_families(@node_families);
 
 my $records = DNS::Oterica::Test->records;
-my $timestamps = DNS::Oterica::Test->timestamps;
 ok(ref $records eq 'HASH', '$records is a hashref');
-ok(ref $timestamps eq 'HASH', '$timestamps is a hashref');
 
 my @hosts = map { s[eg/hosts/][]; "$_.example.com" } glob 'eg/hosts/*';
 my @domains = qw/lists.codesimply.com example.com foobox.com/;
 
 ok(exists $records->{$_}{'+'}, "$_ has a + record") for @hosts;
 ok(exists $records->{$_}{'Z'}, "$_ has a Z record") for @domains;
-
-# array should only contain undef or empty string
-for my $key (keys %$timestamps) {
-  my @saw_timestamps = map { @$_ } values %{$timestamps->{$key}};
-
-  ok(
-    (@saw_timestamps == grep {; ! defined || ! length  } @saw_timestamps),
-    "$key + timestamp should be empty or undef"
-  );
-}
 
 is_deeply(
   [ sort @networks ],
@@ -72,6 +60,26 @@ is_deeply(
   ],
   "location lines are as expected",
 );
+
+subtest "domains have a serial number" => sub {
+  my $serials = DNS::Oterica::Test->serials;
+  ok(exists $serials->{$_}{'Z'}, "$_ has a serial number") for @domains;
+};
+
+subtest "empty timestamps by default" => sub {
+  my $timestamps = DNS::Oterica::Test->timestamps;
+  ok(ref $timestamps eq 'HASH', '$timestamps is a hashref');
+
+  # array should only contain undef or empty string
+  for my $key (keys %$timestamps) {
+    my @saw_timestamps = map { @$_ } values %{$timestamps->{$key}};
+
+    ok(
+      (@saw_timestamps == grep {; ! defined || ! length  } @saw_timestamps),
+      "$key + timestamp should be empty or undef"
+    );
+  }
+};
 
 subtest "per-location IPs" => sub {
   my @azure_lines  = grep {; /\A\+azure/ } @nodes;

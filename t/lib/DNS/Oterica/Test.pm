@@ -9,6 +9,7 @@ use DNS::Oterica;
 
 my $records = {};
 my $timestamps = {};
+my $serials = {};
 
 my %collect_dispatch = (
   '+' => \&collect_plus,
@@ -57,6 +58,10 @@ sub timestamps {
   return $timestamps;
 }
 
+sub serials {
+  return $serials;
+}
+
 sub collect_plus {
   my @parts = @_;
   push @{$records->{$parts[0]}{'+'}}, $parts[1];
@@ -78,6 +83,7 @@ sub collect_cname {
 sub collect_z {
   my @parts = @_;
   push @{$records->{$parts[0]}{'Z'}}, $parts[1];
+  push @{$serials->{$parts[0]}{'Z'}}, $parts[4];
   push @{$timestamps->{$parts[0]}{'Z'}}, $parts[9];
 }
 

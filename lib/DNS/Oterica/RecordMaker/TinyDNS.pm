@@ -12,6 +12,15 @@ to consume.
 
 sub _default_ttl { 1800 }
 
+sub _serial_number {
+  return($ENV{DNS_OTERICA_SN} || $^T)
+}
+
+sub _timestamp {
+  return($ENV{DNS_OTERICA_TS} || '')
+}
+
+
 =method comment
 
   my $line = $rec->comment("Hello, world!");
@@ -64,7 +73,7 @@ sub _generic {
       $rec->{name},
       $if->[0],
       $rec->{ttl} || $self->_default_ttl,
-      '', #$self->_serial_number,
+      $self->_timestamp,
       $if->[1],
     ;
   }
@@ -114,7 +123,7 @@ sub ptr {
       $extended_arpa,
       $rec->{name},
       $rec->{ttl} || $self->_default_ttl,
-      '', #$self->_serial_number,
+      $self->_timestamp,
       $if->[1] eq 'FB' ? '' : $if->[1];
   }
 
@@ -146,7 +155,7 @@ sub soa_and_ns_for_ip {
     $ns_1,
     $addr,
     $self->_default_ttl,
-    '', #$self->_timestamp,
+    $self->_timestamp,
     '',
   ;
 
@@ -185,7 +194,7 @@ sub mx {
       $mx_name,
       $rec->{dist} || 10,
       $rec->{ttl} || $self->_default_ttl,
-      '', #$self->_serial_number,
+      $self->_timestamp,
       $if->[1],
     ;
   }
@@ -207,7 +216,7 @@ sub domain {
     $rec->{ip} || '',
     $rec->{ns},
     $rec->{ttl} || $self->_default_ttl,
-    '', #$self->_serial_number,
+    $self->_timestamp,
     '',
   ;
 
@@ -219,12 +228,13 @@ sub soa_and_ns {
 
   my @lines;
 
-  push @lines, sprintf "Z%s:%s:%s::::::%s:%s:%s\n",
+  push @lines, sprintf "Z%s:%s:%s:%s:::::%s:%s:%s\n",
     $rec->{domain},
     $rec->{ns} || '',
     $rec->{node}->hub->soa_rname,
+    $self->_serial_number,
     $rec->{ttl} || $self->_default_ttl,
-    '', #$self->_serial_number,
+    $self->_timestamp,
     '',
   ;
 
@@ -242,7 +252,7 @@ sub cname {
     $rec->{cname},
     $rec->{domain} || '',
     $rec->{ttl} || $self->_default_ttl,
-    '', #$self->_serial_number,
+    $self->_timestamp,
     '',
   ;
 
@@ -264,7 +274,7 @@ sub txt {
     $name,
     _colon_safe($rec->{text}),
     $rec->{ttl} || $self->_default_ttl,
-    '', #$self->_serial_number,
+    $self->_timestamp,
     '',
   ;
 
