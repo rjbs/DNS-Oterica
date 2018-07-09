@@ -1,7 +1,7 @@
-use strict;
-use warnings;
 package DNS::Oterica::RecordMaker::TinyDNS;
 # ABSTRACT: a tinydns recordmaker for DNSO.
+
+use Moose;
 
 =head1 DESCRIPTION
 
@@ -9,6 +9,17 @@ This role provides logic for generating lines for the F<tinydns-data> program
 to consume.
 
 =cut
+
+has suppress_duplicate_a => (
+  is  => 'ro',
+  isa => 'Bool',
+  default => 1,
+);
+
+has _a_cache => (
+  is => 'ro',
+  default => sub {  {}  },
+);
 
 sub _default_ttl { 1800 }
 
@@ -19,7 +30,6 @@ sub _serial_number {
 sub _timestamp {
   return($ENV{DNS_OTERICA_TS} || '')
 }
-
 
 =method comment
 
@@ -66,8 +76,18 @@ sub __ip_locode_pairs {
 sub _generic {
   my ($self, $op, $rec) = @_;
 
+  my $cache = $self->_a_cache;
+
   my @lines;
-  for my $if ($self->__ip_locode_pairs($rec)) {
+  INTERFACE: for my $if ($self->__ip_locode_pairs($rec)) {
+    if ($op eq '+') {
+      my $key = join q{/}, $rec->{name}, @$if;
+      if ($cache->{$key}++) {
+        push @lines, $self->comment("skipped duplicate + for $key");
+        next INTERFACE;
+      }
+    }
+
     push @lines, sprintf "%s%s:%s:%s:%s:%s\n",
       $op,
       $rec->{name},
@@ -93,7 +113,7 @@ sub a_and_ptr {
   my ($self, $rec) = @_;
 
   return (
-    $self->_generic(q{+}, $rec),
+    $self->a($rec),
     $self->ptr($rec),
   );
 }
@@ -395,4 +415,5 @@ sub dkim {
     $rec->{ttl} || $self->_default_ttl;
 }
 
-1;
+no Moose;
+__PACKAGE__->meta->make_immutable;

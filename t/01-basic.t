@@ -39,6 +39,8 @@ my @networks = map { $_->as_data_lines } $dnso->hub->networks;
 my @nodes = map { $_->as_data_lines } $dnso->hub->nodes;
 my @node_families = map { $_->as_data_lines } $dnso->hub->node_families;
 
+print for @nodes;
+
 DNS::Oterica::Test->collect_dnso_nodes(@nodes);
 DNS::Oterica::Test->collect_dnso_node_families(@node_families);
 
@@ -60,6 +62,16 @@ is_deeply(
   ],
   "location lines are as expected",
 );
+
+subtest "duplicate suppression of A records" => sub {
+	my (@l_xx) = grep { /^\+azure\.example\.com.+::$/   } @nodes;
+	my (@l_fb) = grep { /^\+azure\.example\.com.+::FB$/ } @nodes;
+	my (@l_mp) = grep { /^\+azure\.example\.com.+::mp$/ } @nodes;
+	diag explain(\@l_xx);
+	is(@l_xx, 1, "1 azure A record for null location");
+	is(@l_fb, 1, "1 azure A record for fallback location");
+	is(@l_mp, 1, "1 azure A record for mp location");
+};
 
 subtest "domains have a serial number" => sub {
   my $serials = DNS::Oterica::Test->serials;

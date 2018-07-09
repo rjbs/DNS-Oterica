@@ -18,8 +18,8 @@ The record maker, e.g. L<DNS::Oterica::RecordMaker::TinyDNS>.
 
 has rec => (
   is  => 'ro',
-  isa => 'Str', # XXX or object doing role, etc
-  default => 'DNS::Oterica::RecordMaker::TinyDNS',
+  isa => 'Defined', # String or object (duck type this?)
+  default => sub { DNS::Oterica::RecordMaker::TinyDNS->new },
 );
 
 no Moose::Role;
