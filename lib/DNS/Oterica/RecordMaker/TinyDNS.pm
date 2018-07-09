@@ -24,7 +24,7 @@ has _a_cache => (
 sub _default_ttl { 1800 }
 
 sub _serial_number {
-  return($ENV{DNS_OTERICA_SN} || $^T)
+  return($ENV{DNS_OTERICA_SN} || '')
 }
 
 sub _timestamp {
