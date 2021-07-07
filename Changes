@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - update author contact info
+        - add perl version policy
 
 0.311     2018-07-09 14:48:04-04:00 America/New_York
         - timestamp field is empty by default
