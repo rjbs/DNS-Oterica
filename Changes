@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.313     2021-07-12 06:54:04-04:00 America/New_York
         - fix a bizarre 5.14-related failure (bug in perl's parser?)
         - bump Test::More prereq to avoid failures on ancient Test::More
 
