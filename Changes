@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+        - fix a bizarre 5.14-related failure (bug in perl's parser?)
+        - bump Test::More prereq to avoid failures on ancient Test::More
 
 0.312     2021-07-06 21:24:35-04:00 America/New_York
         - update author contact info
