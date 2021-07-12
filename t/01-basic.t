@@ -67,7 +67,6 @@ subtest "duplicate suppression of A records" => sub {
 	my (@l_xx) = grep { /^\+azure\.example\.com.+::$/   } @nodes;
 	my (@l_fb) = grep { /^\+azure\.example\.com.+::FB$/ } @nodes;
 	my (@l_mp) = grep { /^\+azure\.example\.com.+::mp$/ } @nodes;
-	diag explain(\@l_xx);
 	is(@l_xx, 1, "1 azure A record for null location");
 	is(@l_fb, 1, "1 azure A record for fallback location");
 	is(@l_mp, 1, "1 azure A record for mp location");
