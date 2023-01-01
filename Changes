@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.314     2022-12-31 21:12:29-05:00 America/New_York
         - update author contact info
         - drop "use lib" from bin/dnsoterica
 
