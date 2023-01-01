@@ -1,4 +1,4 @@
-#!/icg/bin/perl
+#!perl
 # ABSTRACT: run dns-o!
 
 # This goofy linebreak prevents PAUSE from indexing this package.  The
@@ -8,7 +8,6 @@ package
 
 use strict;
 use warnings;
-use lib 'lib'; # XXX: temporary for now -- rjbs, 2009-01-30
 
 use DNS::Oterica::App;
 use File::Find::Rule;
